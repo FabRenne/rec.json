@@ -13,9 +13,9 @@
       "ameliorant": null,
       "mignon": null,
       "remoulage": [
-        0,
-        0,
-        0
+        false,
+        false,
+        false
       ],
       "dev_surete": false
     }
