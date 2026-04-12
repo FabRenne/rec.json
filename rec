@@ -1,35 +1,44 @@
 {
   "t55": {
     "sm": {
-      "vb": 20,
-      "vd": 71
+      "vb": 0,
+      "vd": 0
     },
     "am": {
-      "vb": 20,
-      "vd": 50
+      "vb": 0,
+      "vd": 0
     },
     "info": {
-      "gruau": null
+      "gruau": null,
+      "ameliorant": null,
+      "mignon": null,
+      "remoulage": [
+        0,
+        0,
+        0
+      ],
+      "dev_surete": false
     }
   },
-  "t65": {
+  "Tradition": {
     "sm": {
-      "vb": 20,
-      "vd": 71
+      "vb": 23,
+      "vd": 72
     },
     "am": {
-      "vb": 20,
-      "vd": 50
+      "vb": 19,
+      "vd": 67
     },
     "info": {
-      "gruau_sm": {
-        "vb": 15,
-        "vd": 50
-      },
-      "gruau_am": {
-        "vb": 12,
-        "vd": 50
-      }
+      "gruau": "doseur à 18",
+      "ameliorant": "Floricreme",
+      "mignon": "doseur à 18",
+      "remoulage": [
+        true,
+        false,
+        false
+      ],
+      "dev_surete": false
     }
   }
 }
