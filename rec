@@ -35,7 +35,7 @@
       "mignon": "doseur à 18",
       "remoulage": [
         true,
-        false,
+        true,
         false
       ],
       "dev_surete": false
