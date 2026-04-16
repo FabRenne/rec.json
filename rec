@@ -15,7 +15,7 @@
       "remoulage": [
         false,
         false,
-        true
+        false
       ],
       "dev_surete": false
     }
@@ -44,15 +44,15 @@
 "Originale": {
     "sm": {
       "vb": 21,
-      "vd": 72
+      "vd": 63
     },
     "am": {
       "vb": 19,
-      "vd": 67
+      "vd": 55
     },
     "info": {
-      "gruau": "doseur à 18",
-      "ameliorant": "Floricreme",
+      "gruau": "doseur à 37",
+      "ameliorant": "Mill Tradi",
       "mignon": "doseur à 18",
       "remoulage": [
         false,
