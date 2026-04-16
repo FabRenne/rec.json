@@ -15,7 +15,7 @@
       "remoulage": [
         false,
         false,
-        false
+        true
       ],
       "dev_surete": false
     }
