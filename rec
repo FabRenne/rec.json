@@ -55,8 +55,8 @@
       "ameliorant": "Floricreme",
       "mignon": "doseur à 18",
       "remoulage": [
-        true,
-        true,
+        false,
+        false,
         false
       ],
       "dev_surete": false
