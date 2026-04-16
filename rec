@@ -40,5 +40,26 @@
       ],
       "dev_surete": false
     }
-  }
+  }, 
+"Originale": {
+    "sm": {
+      "vb": 21,
+      "vd": 72
+    },
+    "am": {
+      "vb": 19,
+      "vd": 67
+    },
+    "info": {
+      "gruau": "doseur à 18",
+      "ameliorant": "Floricreme",
+      "mignon": "doseur à 18",
+      "remoulage": [
+        true,
+        true,
+        false
+      ],
+      "dev_surete": false
+    }
+  } 
 }
