@@ -1,0 +1,65 @@
+{
+  "t55": {
+    "sm": {
+      "vb": 21,
+      "vd": 0
+    },
+    "am": {
+      "vb": 0,
+      "vd": 0
+    },
+    "info": {
+      "gruau": null,
+      "ameliorant": null,
+      "mignon": null,
+      "remoulage": [
+        false,
+        false,
+        false
+      ],
+      "dev_surete": false
+    }
+  },
+  "Tradition": {
+    "sm": {
+      "vb": 21,
+      "vd": 72
+    },
+    "am": {
+      "vb": 19,
+      "vd": 67
+    },
+    "info": {
+      "gruau": "doseur à 18",
+      "ameliorant": "Floricreme",
+      "mignon": "doseur à 18",
+      "remoulage": [
+        true,
+        false,
+        false
+      ],
+      "dev_surete": false
+    }
+  }, 
+"Originale": {
+    "sm": {
+      "vb": 21,
+      "vd": 58
+    },
+    "am": {
+      "vb": 19,
+      "vd": 55
+    },
+    "info": {
+      "gruau": "doseur à 38",
+      "ameliorant": "Mill Tradi",
+      "mignon": "doseur à 18",
+      "remoulage": [
+        false,
+        false,
+        false
+      ],
+      "dev_surete": false
+    }
+  } 
+}
