@@ -1,12 +1,5 @@
 package com.fabrenne.moutures.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -76,18 +69,8 @@ fun MouturesContent(
                 )
                 else -> Column(Modifier.fillMaxSize()) {
                     // Zone d'informations, au-dessus de la LazyColumn, sur le même écran.
-                    AnimatedVisibility(
-                        visible = etat.selection != null,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut(),
-                    ) {
-                        AnimatedContent(
-                            targetState = etat.selection,
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "detail",
-                        ) { mouture ->
-                            if (mouture != null) DetailMouture(mouture)
-                        }
+                    etat.selection?.let { mouture ->
+                        DetailMouture(mouture)
                     }
 
                     LazyColumn(
