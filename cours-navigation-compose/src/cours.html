@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>La navigation avec Jetpack Compose</title>
+<style>
+  :root{--p:#4F55B5;--pc:#E0E0FF;--ink:#1B1B21;--mute:#55555F;--line:#DCDCE6;--code-bg:#1E1F29;--ok:#1E7B4C;--warn:#B3540A;--bad:#B3261E}
+  *{box-sizing:border-box}
+  html{font-family:Inter,sans-serif;color:var(--ink);font-size:10.6pt;line-height:1.55}
+  body{margin:0}
+  h1{font-size:22pt;margin:0 0 6pt;color:var(--p);letter-spacing:-.3px}
+  h2{font-size:13.5pt;margin:20pt 0 6pt;color:var(--ink)}
+  h3{font-size:11.5pt;margin:14pt 0 4pt;color:var(--p)}
+  p{margin:0 0 8pt}
+  ul,ol{margin:0 0 8pt;padding-left:18pt} li{margin-bottom:3pt}
+  code{font-family:"JetBrains Mono",monospace;font-size:9pt;background:#EEEEF6;padding:1px 4px;border-radius:3px}
+  pre{font-variant-ligatures:none;font-family:"JetBrains Mono",monospace;font-size:8.6pt;line-height:1.5;background:var(--code-bg);color:#E6E6EE;padding:10pt 12pt;border-radius:8px;margin:4pt 0 10pt;white-space:pre-wrap;position:relative}
+  pre[data-file]::before{content:attr(data-file);display:block;color:#9FA3C9;font-size:7.8pt;margin-bottom:6pt;border-bottom:1px solid #393B4D;padding-bottom:4pt}
+  pre .k{color:#C792EA} pre .s{color:#C3E88D} pre .c{color:#7F849C;font-style:italic} pre .a{color:#FFCB6B} pre .n{color:#F78C6C} pre .t{color:#82AAFF}
+  .chapter{break-before:page}
+  .chapnum{font-size:9pt;font-weight:700;letter-spacing:2px;color:var(--mute);text-transform:uppercase}
+  .box{border-radius:10px;padding:9pt 12pt;margin:8pt 0 10pt;break-inside:avoid;border-left:5px solid}
+  .box b.t{display:block;margin-bottom:2pt}
+  .info{background:#EEF0FF;border-color:var(--p)}
+  .tip{background:#E9F6EF;border-color:var(--ok)}
+  .warn{background:#FFF3E6;border-color:var(--warn)}
+  .err{background:#FCEBEA;border-color:var(--bad)}
+  table{border-collapse:collapse;width:100%;margin:6pt 0 12pt;font-size:9.6pt;break-inside:avoid}
+  th,td{border:1px solid var(--line);padding:5pt 7pt;text-align:left;vertical-align:top}
+  th{background:var(--pc)}
+  figure{margin:8pt 0 12pt;text-align:center;break-inside:avoid}
+  figure img{height:330px}
+  figure.one img{height:380px}
+  figure.wide img{height:auto;width:44%}
+  figcaption{font-size:8.6pt;color:var(--mute);margin-top:4pt}
+  .duo{display:flex;justify-content:center;align-items:center;gap:14pt}
+  .duo .arrow{font-size:26pt;color:var(--p);font-weight:700}
+  .duo .arrow small{display:block;font-size:7.5pt;font-weight:500;color:var(--mute)}
+  .split{display:flex;gap:16pt;align-items:flex-start}
+  .split > div{flex:1}
+  .split figure img{height:360px}
+
+  /* couverture */
+  .cover{height:255mm;display:flex;flex-direction:column;justify-content:center;padding:0 6mm}
+  .cover .kicker{font-weight:700;color:var(--p);letter-spacing:3px;font-size:10pt}
+  .cover h1{font-size:38pt;line-height:1.1;color:var(--ink);margin:10pt 0 12pt}
+  .cover h1 span{color:var(--p)}
+  .cover .sub{font-size:13pt;color:var(--mute);max-width:130mm}
+  .cover .pill{display:inline-block;margin:24pt 6pt 0 0;padding:4pt 10pt;border-radius:20px;background:var(--pc);font-size:9pt;font-weight:600;color:#0B0F5E}
+  .cover .imgs{display:flex;gap:12pt;margin-top:30pt}
+  .cover .imgs img{height:390px}
+
+  /* sommaire */
+  .toc ol{list-style:none;padding:0;counter-reset:c}
+  .toc li{display:flex;gap:10pt;padding:6pt 0;border-bottom:1px dotted var(--line);font-size:11pt}
+  .toc li span.n{color:var(--p);font-weight:700;width:22pt}
+  .toc li span.d{margin-left:auto;color:var(--mute);font-size:9pt}
+
+  /* schémas */
+  .diagram{display:flex;align-items:stretch;justify-content:center;gap:8pt;margin:10pt 0 14pt;break-inside:avoid}
+  .node{border:2px solid var(--p);border-radius:10px;padding:8pt 10pt;background:#fff;text-align:center;font-size:9.4pt;min-width:105pt}
+  .node b{display:block;color:var(--p);font-size:10pt}
+  .node.fill{background:var(--pc)}
+  .node.orange{border-color:#E8710A} .node.orange b{color:#E8710A}
+  .arrow-r{align-self:center;color:var(--p);font-size:18pt;font-weight:700}
+  .nest{border:2px solid var(--ink);border-radius:12px;padding:20pt 10pt 10pt;position:relative;background:#FAFAFD}
+  .nest > .lbl{position:absolute;top:5pt;left:10pt;font-size:8.5pt;font-weight:700;color:var(--mute)}
+  .life{display:flex;gap:4pt;flex-wrap:wrap;justify-content:center;margin:8pt 0 12pt}
+  .life div{background:var(--pc);border-radius:6px;padding:4pt 8pt;font-family:"JetBrains Mono";font-size:8.4pt}
+  .life div.hl{background:var(--p);color:#fff}
+  .life span{align-self:center;color:var(--p);font-weight:700}
+
+  .ex{border:1.5px solid var(--line);border-radius:10px;padding:10pt 12pt;margin:8pt 0;break-inside:avoid}
+  .ex .lvl{font-size:8pt;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px}
+  .check li{list-style:none;margin-left:-14pt}
+  .check li::before{content:"☐  ";color:var(--p)}
+
+  .stack{display:flex;flex-direction:column;align-items:center;gap:3pt;min-width:100pt}
+  .stack b{font-size:8.6pt;color:var(--mute);margin-bottom:2pt;font-family:"JetBrains Mono"}
+  .stack-item{width:100%;text-align:center;border:1.5px solid var(--p);border-radius:6px;padding:3pt 6pt;font-size:9pt;background:#fff}
+  .stack-item.top{background:var(--p);color:#fff;font-weight:600}
+  .stack-empty{font-size:9pt;color:var(--mute)}
+  .stack small{font-size:8pt;color:var(--mute);margin-top:2pt}
+  .trio{gap:10pt}
+  .box pre{margin:6pt 0 2pt}
+</style></head><body>
+<section class="cover">
+  <div class="kicker">COURS DÉBUTANT · ANDROID</div>
+  <h1>La <span>navigation</span><br>avec Jetpack Compose</h1>
+  <div class="sub">Passer d'un écran à l'autre, transmettre des informations, gérer le bouton Retour et créer une barre d'onglets — pas à pas, avec des exemples simples et des captures d'écran.</div>
+  <div><span class="pill">Kotlin</span><span class="pill">Jetpack Compose</span><span class="pill">Navigation Compose</span><span class="pill">Projet Android Studio inclus</span></div>
+  <div class="imgs">
+    <img src="../captures/ex2-liste.png" alt=""><img src="../captures/ex5-detail.png" alt=""><img src="../captures/ex4-favoris.png" alt="">
+  </div>
+</section><section class="chapter toc"><h1>Sommaire</h1><ol><li><span class="n">1</span>Les idées de base<span class="d">vocabulaire</span></li><li><span class="n">2</span>Préparer le projet<span class="d">Gradle</span></li><li><span class="n">3</span>Exemple 1 — Aller d'un écran à l'autre<span class="d">navigate</span></li><li><span class="n">4</span>Exemple 2 — Passer une information<span class="d">arguments</span></li><li><span class="n">5</span>Exemple 3 — Maîtriser la pile d'écrans<span class="d">popUpTo</span></li><li><span class="n">6</span>Exemple 4 — Une barre d'onglets en bas<span class="d">NavigationBar</span></li><li><span class="n">7</span>Exemple 5 — Renvoyer un résultat<span class="d">SavedStateHandle</span></li><li><span class="n">8</span>Les bonnes pratiques<span class="d">et pour aller plus loin</span></li><li><span class="n">9</span>Les erreurs fréquentes du débutant<span class="d">et leurs solutions</span></li><li><span class="n">10</span>Exercices corrigés<span class="d">pratique</span></li><li><span class="n">11</span>Aide-mémoire<span class="d">à garder sous la main</span></li><li><span class="n">12</span>Le projet Android Studio<span class="d">mode d'emploi</span></li></ol><div class="box info"><b class="t">À qui s'adresse ce cours ?</b>À toute personne qui connaît les bases de Kotlin et qui sait afficher un texte et un bouton avec Compose (<code>@Composable</code>, <code>Text</code>, <code>Button</code>, <code>Column</code>). Aucune connaissance de la navigation n'est nécessaire.</div><div class="box tip"><b class="t">Un projet prêt à lancer</b>Tout le code de ce cours se trouve dans le projet Android Studio <b>MesRecettes</b> fourni avec ce PDF (dossier <code>projet/</code>). Chaque exemple s'ouvre depuis un menu. Le chapitre 12 explique comment l'ouvrir.</div><div class="box warn"><b class="t">À propos des captures d'écran</b>Les captures sont des rendus fidèles des écrans produits par le code de chaque exemple (thème Material 3 par défaut). Selon votre téléphone et votre version d'Android, l'apparence peut varier légèrement.</div></section><section class="chapter"><div class="chapnum">Chapitre 1</div><h1>Les idées de base</h1>
+<p>Presque toutes les applications ont plusieurs écrans : une liste, un détail, un profil, des paramètres… <b>Naviguer</b>, c'est passer de l'un à l'autre — et savoir revenir en arrière.</p>
+<p>Avec Jetpack Compose, un écran n'est rien d'autre qu'une <b>fonction <code>@Composable</code></b>. La bibliothèque <b>Navigation Compose</b> s'occupe de choisir quelle fonction afficher. Elle repose sur quatre notions :</p>
+<table>
+<tr><th style="width:20%">Notion</th><th style="width:30%">Image</th><th>Rôle</th></tr>
+<tr><td><b>Destination</b><br>(ou route)</td><td>Une adresse sur une carte</td><td>Le nom d'un écran. En Kotlin, c'est un <code>object</code> ou une <code>data class</code> marqué <code>@Serializable</code>.</td></tr>
+<tr><td><b>NavHost</b></td><td>La carte de la ville</td><td>Le Composable qui liste <b>toutes</b> les destinations et affiche celle qui est active.</td></tr>
+<tr><td><b>NavController</b></td><td>Le chauffeur</td><td>L'objet qui <b>change</b> d'écran : <code>navigate(...)</code> pour avancer, <code>popBackStack()</code> pour reculer.</td></tr>
+<tr><td><b>Pile de retour</b><br>(back stack)</td><td>Une pile d'assiettes</td><td>La liste des écrans visités. Le nouvel écran est posé <b>dessus</b> ; « Retour » retire celui du dessus.</td></tr>
+</table>
+<div class="diagram">
+  <div class="node fill"><b>NavController</b>navigate(Profil)</div><div class="arrow-r">→</div>
+  <div class="nest" style="flex:1"><span class="lbl">NAVHOST</span>
+    <div style="display:flex;gap:8pt;justify-content:center">
+      <div class="node"><b>Accueil</b>EcranAccueil()</div><div class="node" style="border-width:3px;background:#EEF0FF"><b>Profil ← affiché</b>EcranProfil()</div><div class="node"><b>Parametres</b>EcranParametres()</div>
+    </div></div>
+</div>
+<p style="text-align:center;font-size:8.6pt;color:var(--mute);margin-top:-6pt">Schéma : le NavController demande au NavHost d'afficher une destination.</p>
+<h2>La pile de retour, en images</h2><div class="diagram"><div class="stack"><b>Au lancement</b><div class="stack-item top">Accueil</div></div><div class="arrow-r">→</div><div class="stack"><b>navigate(Profil)</b><div class="stack-item top">Profil</div><div class="stack-item">Accueil</div></div><div class="arrow-r">→</div><div class="stack"><b>navigate(Parametres)</b><div class="stack-item top">Parametres</div><div class="stack-item">Profil</div><div class="stack-item">Accueil</div></div><div class="arrow-r">→</div><div class="stack"><b>Retour</b><div class="stack-item top">Profil</div><div class="stack-item">Accueil</div></div></div><p>L'écran affiché est toujours celui <b>du haut</b> de la pile (en couleur). Quand la pile ne contient plus qu'un écran, « Retour » ferme l'application.</p><div class="box info"><b class="t">Navigation « typée »</b>Depuis la version 2.8, Navigation Compose utilise des <b>classes Kotlin</b> comme destinations, au lieu de chaînes de caractères comme <code>"detail/{id}"</code>. Le compilateur vérifie alors vos erreurs à votre place. C'est la méthode recommandée, celle de ce cours. Sur Internet, vous verrez encore l'ancienne syntaxe avec des chaînes : le principe est le même.</div></section><section class="chapter"><div class="chapnum">Chapitre 2</div><h1>Préparer le projet</h1><p>Partez d'un projet Android Studio créé avec le modèle <b>Empty Activity</b> (Compose déjà activé). Il faut ajouter deux choses : la bibliothèque <b>Navigation Compose</b> et le plugin de <b>sérialisation</b> Kotlin, qui transforme vos destinations en « adresses ».</p><figure class="wide"><img src="../captures/studio-arbo.png" alt=""><figcaption>Capture 1 — Organisation du projet MesRecettes fourni avec le cours.</figcaption></figure><h2>Étape 1 — Les versions</h2><pre class="kt" data-file="gradle/libs.versions.toml (extrait)">[versions]
+kotlin = &quot;2.0.21&quot;
+navigation = &quot;2.8.5&quot;
+serialization = &quot;1.7.3&quot;
+
+[libraries]
+androidx-navigation-compose = { group = &quot;androidx.navigation&quot;, name = &quot;navigation-compose&quot;, version.ref = &quot;navigation&quot; }
+kotlinx-serialization-json = { group = &quot;org.jetbrains.kotlinx&quot;, name = &quot;kotlinx-serialization-json&quot;, version.ref = &quot;serialization&quot; }
+
+[plugins]
+kotlin-serialization = { id = &quot;org.jetbrains.kotlin.plugin.serialization&quot;, version.ref = &quot;kotlin&quot; }</pre><h2>Étape 2 — Le module app</h2><pre class="kt" data-file="app/build.gradle.kts (extrait)">plugins {
+    // ... plugins déjà présents
+    alias(libs.plugins.kotlin.serialization)  // indispensable pour les routes @Serializable
+}
+
+dependencies {
+    // ... dépendances déjà présentes
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+}</pre><p>Dans le fichier <code>build.gradle.kts</code> <b>racine</b>, déclarez aussi le plugin : <code>alias(libs.plugins.kotlin.serialization) apply false</code>. Cliquez enfin sur <b>Sync Now</b>.</p><div class="box warn"><b class="t">Même version que Kotlin</b>Le plugin de sérialisation doit avoir <b>exactement</b> la même version que votre plugin Kotlin (ici <code>2.0.21</code>). C'est pour cela qu'il réutilise <code>version.ref = "kotlin"</code>.</div><div class="box tip"><b class="t">Mettre à jour</b>Des versions plus récentes existent sûrement quand vous lisez ce cours. Android Studio souligne les dépendances obsolètes : <b>Alt + Entrée</b> propose la mise à jour.</div></section><section class="chapter"><div class="chapnum">Chapitre 3 · Exemple 1</div><h1>Aller d'un écran à l'autre</h1><p><b>Objectif :</b> un écran <b>Accueil</b> avec un bouton « Voir mon profil » qui ouvre un écran <b>Profil</b>. Le bouton Retour revient à l'accueil.</p><div class="duo"><figure style="margin:0"><img src="../captures/ex1-accueil.png" alt="" style="height:300px"><figcaption>Capture 2 — Destination Accueil</figcaption></figure><div class="arrow">→<small>navigate(<br>Profil)</small></div><figure style="margin:0"><img src="../captures/ex1-profil.png" alt="" style="height:300px"><figcaption>Capture 3 — Destination Profil</figcaption></figure></div><h2>Étape 1 — Déclarer les destinations</h2><p>Une destination sans information à transmettre est un simple <code>object</code> :</p><pre class="kt" data-file="exemple1/Routes.kt">// Chapitre 3 : une destination = un objet marqué @Serializable
+
+@Serializable
+object Accueil
+
+@Serializable
+object Profil
+
+@Serializable
+object Parametres      // exercice 1</pre><h2>Étape 2 — Écrire les écrans</h2><p>Les écrans sont des Composables ordinaires. Point essentiel : ils <b>ne connaissent pas</b> le NavController. Ils reçoivent des fonctions (<code>onVoirProfil</code>, <code>onRetour</code>) qu'ils appellent quand on clique.</p><pre class="kt" data-file="exemple1/Ecrans.kt (extrait)">@Composable
+fun EcranAccueil(onVoirProfil: () -&gt; Unit) {
+    Scaffold(topBar = { BarreDuHaut(&quot;Accueil&quot;) }) { padding -&gt;
+        Column(
+            Modifier.padding(padding).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+            Text(&quot;🏠&quot;, fontSize = 96.sp)
+            Text(&quot;Bienvenue !&quot;, style = MaterialTheme.typography.headlineMedium)
+            Text(&quot;Ceci est le premier écran\n(destination Accueil).&quot;, textAlign = TextAlign.Center)
+            Button(onClick = onVoirProfil) { Text(&quot;Voir mon profil&quot;) }
+        }
+    }
+}
+
+@Composable
+fun EcranProfil(onRetour: () -&gt; Unit, onParametres: () -&gt; Unit) {
+    Scaffold(topBar = { BarreDuHaut(&quot;Profil&quot;, onRetour = onRetour) }) { padding -&gt;
+        Column(
+            Modifier.padding(padding).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+            Text(&quot;👩‍🍳&quot;, fontSize = 80.sp)
+            Text(&quot;Léa Martin&quot;, style = MaterialTheme.typography.headlineMedium)
+            Text(&quot;Cuisinière amatrice 🍳&quot;)
+            FilledTonalButton(onClick = onRetour) { Text(&quot;← Retour&quot;) }
+            Button(onClick = onParametres) { Text(&quot;Paramètres&quot;) }
+        }
+    }
+}</pre><p>Le petit composant <code>BarreDuHaut(titre, onRetour)</code> est une <code>TopAppBar</code> avec une flèche ← quand <code>onRetour</code> est fourni. Il se trouve dans <code>ui/Composants.kt</code>.</p><h2>Étape 3 — Le NavHost</h2><p>C'est ici que tout se relie : on crée le NavController, on liste les destinations, et on dit quoi faire quand un écran appelle ses fonctions.</p><pre class="kt" data-file="exemple1/Exemple1Activity.kt">class Exemple1Activity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { MaterialTheme { AppExemple1() } }
+    }
+}
+
+@Composable
+fun AppExemple1() {
+    // 1. Le NavController : le &quot;chauffeur&quot; qui change d&#x27;écran
+    val navController = rememberNavController()
+
+    // 2. Le NavHost : la &quot;carte&quot; de tous les écrans
+    NavHost(navController = navController, startDestination = Accueil) {
+
+        composable&lt;Accueil&gt; {
+            EcranAccueil(
+                onVoirProfil = { navController.navigate(Profil) }
+            )
+        }
+
+        composable&lt;Profil&gt; {
+            EcranProfil(
+                onRetour = { navController.popBackStack() },
+                onParametres = { navController.navigate(Parametres) }   // exercice 1
+            )
+        }
+
+        composable&lt;Parametres&gt; {                                        // exercice 1
+            EcranParametres(onRetour = { navController.popBackStack() })
+        }
+    }
+}</pre><h2>Ce qu'il faut retenir</h2><ol><li><code>rememberNavController()</code> crée le « chauffeur ».</li><li><code>NavHost(navController, startDestination = Accueil) { ... }</code> liste les écrans ; <code>startDestination</code> est le premier affiché.</li><li><code>composable&lt;Accueil&gt; { ... }</code> associe une destination à un Composable.</li><li><code>navController.navigate(Profil)</code> avance ; <code>navController.popBackStack()</code> recule.</li></ol><table><tr><th>Méthode</th><th>Effet</th></tr><tr><td><code>navigate(destination)</code></td><td>Pose un nouvel écran sur la pile.</td></tr><tr><td><code>popBackStack()</code></td><td>Retire l'écran du dessus (comme le bouton Retour du téléphone).</td></tr><tr><td><code>navigateUp()</code></td><td>Remonte d'un niveau ; presque identique à <code>popBackStack()</code> dans une appli simple. Idéal pour la flèche ← de la barre du haut.</td></tr></table><div class="box tip"><b class="t">Le bouton Retour du téléphone</b>Vous n'avez <b>rien</b> à coder : le NavHost gère automatiquement le bouton (ou le geste) Retour d'Android.</div></section><section class="chapter"><div class="chapnum">Chapitre 4 · Exemple 2</div><h1>Passer une information à un écran</h1><p><b>Objectif :</b> une liste de recettes. Quand on touche une recette, l'écran de détail doit savoir <b>laquelle</b> afficher. On va lui transmettre son identifiant (<code>id</code>).</p><div class="duo"><figure style="margin:0"><img src="../captures/ex2-liste.png" alt="" style="height:300px"><figcaption>Capture 4 — ListeRecettes</figcaption></figure><div class="arrow">→<small>navigate(<br>Detail(id = 1))</small></div><figure style="margin:0"><img src="../captures/ex2-detail.png" alt="" style="height:300px"><figcaption>Capture 5 — Detail</figcaption></figure></div><h2>Étape 1 — Une destination avec argument = une data class</h2><pre class="kt" data-file="exemple2/Routes.kt">// Chapitre 4 : une destination AVEC argument = une data class
+
+@Serializable
+object ListeRecettes
+
+@Serializable
+data class Detail(val id: Int)
+
+@Serializable
+data class Auteur(val nom: String)      // exercice 2</pre><h2>Étape 2 — Envoyer et recevoir l'argument</h2><pre class="kt" data-file="exemple2/Exemple2Activity.kt (extrait)">@Composable
+fun AppExemple2() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = ListeRecettes) {
+
+        composable&lt;ListeRecettes&gt; {
+            EcranListe(
+                onRecetteClique = { recette -&gt;
+                    // On crée la destination AVEC sa valeur
+                    navController.navigate(Detail(id = recette.id))
+                }
+            )
+        }
+
+        composable&lt;Detail&gt; { backStackEntry -&gt;
+            // On relit l&#x27;argument, déjà avec le bon type (Int)
+            val detail: Detail = backStackEntry.toRoute()
+            val recette = recetteParId(detail.id)
+            EcranDetail(
+                recette = recette,
+                onRetour = { navController.popBackStack() },
+                onVoirAuteur = { navController.navigate(Auteur(nom = recette.auteur)) }  // exercice 2
+            )
+        }
+
+        composable&lt;Auteur&gt; { backStackEntry -&gt;                                         // exercice 2
+            val auteur: Auteur = backStackEntry.toRoute()
+            EcranAuteur(nom = auteur.nom, onRetour = { navController.popBackStack() })
+        }
+    }
+}</pre><div class="diagram"><div class="node"><b>1. Clic</b>EcranListe appelle<br>onRecetteClique(recette)</div><div class="arrow-r">→</div><div class="node fill"><b>2. Envoi</b>navigate(<br>Detail(id = 1))</div><div class="arrow-r">→</div><div class="node fill"><b>3. Réception</b>backStackEntry<br>.toRoute&lt;Detail&gt;()</div><div class="arrow-r">→</div><div class="node"><b>4. Utilisation</b>recetteParId(<br>detail.id)</div></div><h2>Étape 3 — L'écran de détail</h2><p>L'écran reçoit directement la <code>Recette</code> à afficher. Il ne sait pas d'où elle vient : c'est le NavHost qui l'a retrouvée.</p><pre class="kt" data-file="exemple2/Ecrans.kt (extrait)">@Composable
+fun EcranDetail(recette: Recette, onRetour: () -&gt; Unit, onVoirAuteur: () -&gt; Unit) {
+    Scaffold(topBar = { BarreDuHaut(recette.nom, onRetour = onRetour) }) { padding -&gt;
+        Column(
+            Modifier.padding(padding).fillMaxSize().padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+            Text(recette.emoji, fontSize = 96.sp)
+            Text(recette.nom, style = MaterialTheme.typography.headlineMedium)
+            Text(&quot;⏱ ${recette.duree} min · ${recette.difficulte}&quot;)
+            Text(recette.description, textAlign = TextAlign.Center)
+            FilledTonalButton(onClick = onVoirAuteur) { Text(&quot;Voir l&#x27;auteur&quot;) }
+        }
+    }
+}</pre><div class="box err"><b class="t">Ne transmettez pas un objet entier</b>On envoie <code>Detail(id = 1)</code>, <b>pas</b> la recette complète. Les arguments sont enregistrés par Android (pour survivre à une rotation, par exemple) : ils doivent rester <b>petits et simples</b>. On transmet un identifiant, puis on retrouve l'objet (ici avec <code>recetteParId</code>, plus tard dans une base de données).</div><h2>Quels types peut-on utiliser ?</h2><table><tr><th>Type</th><th>Exemple</th></tr><tr><td><code>Int</code>, <code>Long</code>, <code>Float</code>, <code>Double</code>, <code>Boolean</code></td><td><code>data class Detail(val id: Int)</code></td></tr><tr><td><code>String</code></td><td><code>data class Auteur(val nom: String)</code></td></tr><tr><td>Valeur facultative (avec une valeur par défaut)</td><td><code>data class Recherche(val texte: String = "")</code><br>→ <code>navigate(Recherche())</code> ou <code>navigate(Recherche("tarte"))</code></td></tr><tr><td>Valeur qui peut être absente</td><td><code>data class Filtre(val categorie: String? = null)</code></td></tr><tr><td>Listes simples</td><td><code>data class Selection(val ids: List&lt;Int&gt;)</code></td></tr></table></section><section class="chapter"><div class="chapnum">Chapitre 5 · Exemple 3</div><h1>Maîtriser la pile d'écrans</h1><p><b>Situation :</b> un écran de <b>Connexion</b>. Une fois connecté, on arrive sur l'accueil. Problème : avec un simple <code>navigate</code>, un appui sur Retour… ramène à l'écran de connexion ! Ce n'est pas ce qu'on veut.</p><div class="duo"><figure style="margin:0"><img src="../captures/ex3-connexion.png" alt="" style="height:300px"><figcaption>Capture 6 — Connexion</figcaption></figure><div class="arrow">→<small>navigate +<br>popUpTo</small></div><figure style="margin:0"><img src="../captures/ex3-accueil.png" alt="" style="height:300px"><figcaption>Capture 7 — Accueil connecté</figcaption></figure></div><h2>Le problème, puis la solution</h2><div class="diagram"><div class="stack"><b>navigate simple</b><div class="stack-item top">Accueil</div><div class="stack-item">Connexion</div><small>❌ Retour → Connexion</small></div><div class="arrow-r">→</div><div class="stack"><b>avec popUpTo + inclusive</b><div class="stack-item top">Accueil</div><small>✅ Retour → quitte l'appli</small></div></div><p>L'option <b><code>popUpTo</code></b> retire des écrans de la pile <b>avant</b> d'ajouter le nouveau. On l'écrit dans un bloc <code>{ }</code> juste après <code>navigate</code> :</p><pre class="kt" data-file="exemple3/Exemple3Activity.kt (extrait)">composable&lt;Connexion&gt; {
+    EcranConnexion(
+        onConnecte = { prenom -&gt;
+            navController.navigate(AccueilConnecte(prenom)) {
+                // Retire Connexion de la pile (inclusive = true : Connexion compris)
+                popUpTo&lt;Connexion&gt; { inclusive = true }
+                // N&#x27;empile pas deux fois le même écran en cas de double clic
+                launchSingleTop = true
+            }
+        }
+    )
+}</pre><table><tr><th>Option</th><th>Ce qu'elle fait</th></tr><tr><td><code>popUpTo&lt;X&gt;()</code></td><td>Retire tous les écrans posés <b>au-dessus</b> de X.</td></tr><tr><td><code>popUpTo&lt;X&gt; { inclusive = true }</code></td><td>Pareil, et retire <b>X lui-même</b>.</td></tr><tr><td><code>popUpTo(navController.graph.id) { inclusive = true }</code></td><td>Vide <b>toute</b> la pile.</td></tr><tr><td><code>launchSingleTop = true</code></td><td>Si l'écran demandé est déjà en haut de la pile, on ne le rajoute pas une 2<sup>e</sup> fois (utile contre les doubles clics).</td></tr></table><h2>L'écran de connexion</h2><p>Il garde ce que l'on tape avec <code>rememberSaveable</code> (le texte survit à la rotation), puis appelle <code>onConnecte(prenom)</code>.</p><pre class="kt" data-file="exemple3/Ecrans.kt (extrait)">@Composable
+fun EcranConnexion(onConnecte: (String) -&gt; Unit) {
+    var prenom by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    var motDePasse by rememberSaveable { mutableStateOf(&quot;&quot;) }
+
+    Scaffold(topBar = { BarreDuHaut(&quot;Connexion&quot;) }) { padding -&gt;
+        Column(
+            Modifier.padding(padding).fillMaxSize().padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+        ) {
+            Text(&quot;🔐&quot;, fontSize = 72.sp)
+            OutlinedTextField(
+                value = prenom,
+                onValueChange = { prenom = it },
+                label = { Text(&quot;Prénom&quot;) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = motDePasse,
+                onValueChange = { motDePasse = it },
+                label = { Text(&quot;Mot de passe&quot;) },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Button(
+                onClick = { onConnecte(prenom.ifBlank { &quot;invité&quot; }) },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(&quot;Se connecter&quot;) }
+            // … petit texte d&#x27;aide
+        }
+    }
+}</pre><div class="box info"><b class="t">Et la déconnexion ?</b>C'est l'exercice 3 (chapitre 10) : il faut revenir à la connexion en vidant <b>toute</b> la pile, sinon Retour ramènerait à l'accueil connecté.</div></section><section class="chapter"><div class="chapnum">Chapitre 6 · Exemple 4</div><h1>Une barre d'onglets en bas</h1><p><b>Objectif :</b> trois onglets — Recettes, Favoris, Profil — toujours visibles en bas de l'écran, comme dans la plupart des applications.</p><div class="duo trio"><figure style="margin:0"><img src="../captures/ex4-recettes.png" alt="" style="height:270px"><figcaption>Capture 8 — Recettes</figcaption></figure><figure style="margin:0"><img src="../captures/ex4-favoris.png" alt="" style="height:270px"><figcaption>Capture 9 — Favoris</figcaption></figure><figure style="margin:0"><img src="../captures/ex4-profil.png" alt="" style="height:270px"><figcaption>Capture 10 — Profil</figcaption></figure></div><h2>Étape 1 — Les destinations et la liste des onglets</h2><pre class="kt" data-file="exemple4/Routes.kt">// Chapitre 6 : une destination par onglet
+
+@Serializable
+object Recettes
+
+@Serializable
+object Favoris
+
+@Serializable
+object Profil
+
+/** Décrit un onglet de la barre du bas. */
+data class Onglet&lt;T : Any&gt;(val titre: String, val icone: ImageVector, val route: T)
+
+val onglets = listOf(
+    Onglet(&quot;Recettes&quot;, Icons.Filled.Home, Recettes),
+    Onglet(&quot;Favoris&quot;, Icons.Filled.Favorite, Favoris),
+    Onglet(&quot;Profil&quot;, Icons.Filled.Person, Profil),
+)</pre><h2>Étape 2 — Le Scaffold commun et le NavHost</h2><p>Cette fois, la barre du haut et la barre du bas sont dessinées <b>une seule fois</b>, autour du NavHost. Seul le contenu du milieu change.</p><pre class="kt" data-file="exemple4/Exemple4Activity.kt (extrait)">@Composable
+fun AppExemple4() {
+    val navController = rememberNavController()
+
+    // L&#x27;écran actuellement affiché (se met à jour à chaque navigation)
+    val entreeActuelle by navController.currentBackStackEntryAsState()
+    val destinationActuelle = entreeActuelle?.destination
+
+    // L&#x27;onglet sélectionné = celui dont la route correspond à la destination actuelle
+    val ongletActuel = onglets.firstOrNull { onglet -&gt;
+        destinationActuelle?.hierarchy?.any { it.hasRoute(onglet.route::class) } == true
+    }
+
+    Scaffold(
+        topBar = { BarreDuHaut(ongletActuel?.titre ?: &quot;&quot;) },
+        bottomBar = {
+            NavigationBar {
+                onglets.forEach { onglet -&gt;
+                    NavigationBarItem(
+                        selected = onglet == ongletActuel,
+                        onClick = {
+                            navController.navigate(onglet.route) {
+                                // Revient au 1er onglet en gardant l&#x27;état des autres
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true   // pas de doublon si on re-touche l&#x27;onglet
+                                restoreState = true      // retrouve l&#x27;état (ex. position de la liste)
+                            }
+                        },
+                        icon = { Icon(onglet.icone, contentDescription = onglet.titre) },
+                        label = { Text(onglet.titre) }
+                    )
+                }
+            }
+        }
+    ) { padding -&gt;
+        // Le NavHost occupe l&#x27;espace entre les deux barres
+        NavHost(
+            navController = navController,
+            startDestination = Recettes,
+            modifier = Modifier.padding(padding)
+        ) {
+            composable&lt;Recettes&gt; { EcranRecettes() }
+            composable&lt;Favoris&gt; { EcranFavoris() }
+            composable&lt;Profil&gt; { EcranProfil() }
+        }
+    }
+}</pre><h2>Les trois lignes magiques</h2><table><tr><th>Ligne</th><th>Pourquoi ?</th></tr><tr><td><code>popUpTo(...findStartDestination().id) { saveState = true }</code></td><td>Évite d'empiler les onglets à l'infini (Recettes → Favoris → Profil → Favoris…). Retour depuis un onglet ramène au premier, puis quitte l'appli.</td></tr><tr><td><code>launchSingleTop = true</code></td><td>Toucher l'onglet déjà sélectionné ne crée pas de doublon.</td></tr><tr><td><code>restoreState = true</code></td><td>En revenant sur un onglet, on retrouve son état : position dans la liste, interrupteur du profil…</td></tr></table><div class="box info"><b class="t">Savoir quel onglet est actif</b><code>navController.currentBackStackEntryAsState()</code> donne l'écran affiché et se met à jour à chaque navigation. On compare sa destination avec la route de chaque onglet grâce à <code>hasRoute(onglet.route::class)</code>.</div><div class="box warn"><b class="t">Pas de Scaffold dans les écrans d'onglets</b>Les écrans <code>EcranRecettes</code>, <code>EcranFavoris</code> et <code>EcranProfil</code> n'ont pas leur propre <code>Scaffold</code> : sinon on aurait deux barres du haut. N'oubliez pas <code>Modifier.padding(padding)</code> sur le NavHost, sinon le contenu passe sous les barres.</div></section><section class="chapter"><div class="chapnum">Chapitre 7 · Exemple 5</div><h1>Renvoyer un résultat</h1><p><b>Objectif :</b> depuis le détail d'une recette, on ouvre un écran <b>Noter</b>. L'utilisateur choisit une note de 1 à 5, valide… et la note doit apparaître sur l'écran de détail.</p><div class="duo"><figure style="margin:0"><img src="../captures/ex5-noter.png" alt="" style="height:300px"><figcaption>Capture 11 — Noter</figcaption></figure><div class="arrow">→<small>note renvoyée<br>+ popBackStack</small></div><figure style="margin:0"><img src="../captures/ex5-detail.png" alt="" style="height:300px"><figcaption>Capture 12 — Retour au détail</figcaption></figure></div><h2>Le principe : une « boîte aux lettres »</h2><p>Chaque écran de la pile possède une petite boîte de rangement, le <b><code>savedStateHandle</code></b>. L'écran Noter dépose la note dans la boîte de l'écran <b>précédent</b>, puis se ferme. L'écran de détail, qui surveille sa boîte, voit la note arriver.</p><div class="diagram"><div class="node"><b>Noter</b>previousBackStackEntry<br>.savedStateHandle["note"] = 4</div><div class="arrow-r">→</div><div class="node fill orange"><b>Boîte de Detail</b>note = 4</div><div class="arrow-r">→</div><div class="node"><b>Detail</b>getStateFlow("note", 0)<br>.collectAsState() → 4 ★</div></div><pre class="kt" data-file="exemple5/Exemple5Activity.kt (extrait)">        composable&lt;Detail&gt; { backStackEntry -&gt;
+            val recette = recetteParId(backStackEntry.toRoute&lt;Detail&gt;().id)
+
+            // 2. On ÉCOUTE la note déposée dans NOTRE SavedStateHandle (0 = pas encore notée)
+            val note by backStackEntry.savedStateHandle
+                .getStateFlow(CLE_NOTE, 0)
+                .collectAsState()
+
+            EcranDetailAvecNote(
+                recette = recette,
+                note = note,
+                onNoter = { navController.navigate(Noter(recette.id)) },
+                onRetour = { navController.popBackStack() }
+            )
+        }
+
+        composable&lt;Noter&gt; { backStackEntry -&gt;
+            val recette = recetteParId(backStackEntry.toRoute&lt;Noter&gt;().id)
+            EcranNoter(
+                recette = recette,
+                onValider = { noteChoisie -&gt;
+                    // 1. On DÉPOSE la note dans le SavedStateHandle de l&#x27;écran PRÉCÉDENT…
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(CLE_NOTE, noteChoisie)
+                    // … puis on revient en arrière
+                    navController.popBackStack()
+                },
+                onRetour = { navController.popBackStack() }
+            )
+        }</pre><h2>L'écran Noter</h2><pre class="kt" data-file="exemple5/Ecrans.kt (extrait)">@Composable
+fun EcranNoter(recette: Recette, onValider: (Int) -&gt; Unit, onRetour: () -&gt; Unit) {
+    var note by rememberSaveable { mutableIntStateOf(3) }
+    Scaffold(topBar = { BarreDuHaut(&quot;Noter « ${recette.nom} »&quot;, onRetour = onRetour) }) { padding -&gt;
+        Column(
+            Modifier.padding(padding).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
+        ) {
+            Text(&quot;Touchez les étoiles pour choisir votre note :&quot;)
+            Etoiles(note = note, taille = 52.sp, onChoix = { note = it })
+            Text(&quot;$note / 5&quot;, style = MaterialTheme.typography.headlineMedium)
+            Button(onClick = { onValider(note) }) { Text(&quot;Valider&quot;) }
+        }
+    }
+}</pre><p>Les étoiles cliquables viennent du composant <code>Etoiles(note, onChoix)</code> de <code>ui/Composants.kt</code>.</p><div class="box tip"><b class="t">Pourquoi pas une simple variable globale ?</b>Parce que la boîte <code>savedStateHandle</code> est <b>sauvegardée par Android</b> : la note survit à une rotation de l'écran ou à la mise en arrière-plan de l'appli. Une variable globale, elle, serait perdue.</div><div class="box info"><b class="t">Quand utiliser un ViewModel à la place ?</b>Pour un petit résultat ponctuel (une note, un choix), le <code>savedStateHandle</code> est parfait. Pour des données partagées par plusieurs écrans (un panier, un utilisateur connecté), préférez un <b>ViewModel</b> commun (voir chapitre 8).</div></section><section class="chapter"><div class="chapnum">Chapitre 8</div><h1>Les bonnes pratiques</h1><h2>1. Ne donnez jamais le NavController à vos écrans</h2><div class="split"><div><div class="box err"><b class="t">À éviter</b><pre class="kt">@Composable
+fun EcranListe(navController: NavController) {
+    Button(onClick = {
+        navController.navigate(Detail(1))
+    }) { Text(&quot;Ouvrir&quot;) }
+}</pre></div></div><div><div class="box tip"><b class="t">À préférer</b><pre class="kt">@Composable
+fun EcranListe(onOuvrir: (Int) -&gt; Unit) {
+    Button(onClick = { onOuvrir(1) }) {
+        Text(&quot;Ouvrir&quot;)
+    }
+}</pre></div></div></div><p>Avec des lambdas, l'écran est <b>réutilisable</b> (même écran dans deux parcours différents), <b>testable</b>, et visible dans l'<b>aperçu</b> <code>@Preview</code> d'Android Studio sans faux NavController. Toute la navigation reste au même endroit : le NavHost.</p><h2>2. Un seul NavHost par « niveau »</h2><p>En général, un seul <code>NavHost</code> dans l'Activity suffit. Créez le NavController <b>une fois</b>, tout en haut, avec <code>rememberNavController()</code> — jamais dans un écran.</p><h2>3. Regrouper des écrans : les graphes imbriqués</h2><p>Quand l'application grandit, on peut regrouper des écrans liés (connexion, inscription, mot de passe oublié) dans un sous-graphe :</p><pre class="kt">@Serializable object Authentification   // le nom du groupe
+
+NavHost(navController, startDestination = Authentification) {
+    navigation&lt;Authentification&gt;(startDestination = Connexion) {
+        composable&lt;Connexion&gt; { /* ... */ }
+        composable&lt;Inscription&gt; { /* ... */ }
+    }
+    composable&lt;Accueil&gt; { /* ... */ }
+}
+
+// Après la connexion, on retire tout le groupe d&#x27;un coup :
+navController.navigate(Accueil) { popUpTo&lt;Authentification&gt; { inclusive = true } }</pre><h2>4. Pour aller plus loin : lire l'argument dans un ViewModel</h2><p>Dans une vraie application, l'écran de détail a souvent un ViewModel. Il peut lire l'argument lui-même grâce à son <code>SavedStateHandle</code> (dépendance <code>lifecycle-viewmodel-compose</code>) :</p><pre class="kt">class DetailViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+    private val detail: Detail = savedStateHandle.toRoute()
+    val recette = recetteParId(detail.id)
+}
+
+composable&lt;Detail&gt; {
+    val vm: DetailViewModel = viewModel()
+    EcranDetail(recette = vm.recette, /* ... */)
+}</pre><div class="box info"><b class="t">Liens profonds (deep links)</b>Navigation Compose permet aussi d'ouvrir directement un écran depuis un lien web ou une notification (<code>deepLinks = listOf(navDeepLink&lt;Detail&gt;(basePath = "https://..."))</code>). C'est une étape suivante, une fois les bases maîtrisées.</div></section><section class="chapter"><div class="chapnum">Chapitre 9</div><h1>Les erreurs fréquentes du débutant</h1><div class="box err"><b class="t">1. « Serializer for class 'Detail' is not found »</b>Il manque le plugin de sérialisation ou l'annotation. <br><b>Solution :</b> ajoutez <code>@Serializable</code> au-dessus de chaque destination, et le plugin <code>kotlin.serialization</code> dans Gradle (chapitre 2).</div><div class="box err"><b class="t">2. « Destination ... cannot be found in navigation graph »</b>Vous naviguez vers une destination qui n'a pas de <code>composable&lt;...&gt;</code> dans le NavHost. <br><b>Solution :</b> ajoutez-la dans le bloc <code>NavHost { }</code>.</div><div class="box err"><b class="t">3. Le bouton Retour ramène à l'écran de connexion</b><b>Solution :</b> <code>popUpTo&lt;Connexion&gt; { inclusive = true }</code> lors du <code>navigate</code> (chapitre 5).</div><div class="box err"><b class="t">4. Les onglets s'empilent et Retour parcourt tous les onglets visités</b><b>Solution :</b> utilisez les trois options <code>popUpTo(...) { saveState = true }</code>, <code>launchSingleTop</code> et <code>restoreState</code> (chapitre 6).</div><div class="box err"><b class="t">5. Un écran s'ouvre deux fois après un double clic</b><b>Solution :</b> <code>launchSingleTop = true</code>, ou désactivez le bouton pendant la navigation.</div><div class="box err"><b class="t">6. Le contenu passe sous la barre du bas</b><b>Solution :</b> transmettez le <code>padding</code> du Scaffold au NavHost : <code>NavHost(..., modifier = Modifier.padding(padding))</code>.</div><div class="box err"><b class="t">7. Le NavController est recréé et l'appli revient au début</b>Vous avez écrit <code>NavHostController(context)</code> ou créé le contrôleur dans un écran. <br><b>Solution :</b> <code>val navController = rememberNavController()</code>, une seule fois, tout en haut.</div><div class="box err"><b class="t">8. « Unresolved reference: toRoute / composable »</b>Il manque un import. <br><b>Solution :</b> <code>import androidx.navigation.toRoute</code> et <code>import androidx.navigation.compose.composable</code>. Dans Android Studio, <b>Alt + Entrée</b> sur le mot en rouge ajoute l'import.</div></section><section class="chapter"><div class="chapnum">Chapitre 10</div><h1>Exercices corrigés</h1><p>Les solutions sont déjà intégrées au projet <b>MesRecettes</b> (commentaires <code>// exercice N</code>) : essayez d'abord sans regarder !</p><div class="ex"><div class="lvl">Exercice 1 · Facile — dans exemple1</div><p>Ajoutez un écran <b>Paramètres</b> (avec un interrupteur « Notifications »), accessible par un bouton depuis l'écran Profil.</p><b>Correction</b><pre class="kt">// Routes.kt
+@Serializable
+object Parametres
+
+// Dans le NavHost
+composable&lt;Profil&gt; {
+    EcranProfil(
+        onRetour = { navController.popBackStack() },
+        onParametres = { navController.navigate(Parametres) }
+    )
+}
+composable&lt;Parametres&gt; {
+    EcranParametres(onRetour = { navController.popBackStack() })
+}</pre><p>Pile après les deux clics : [Accueil, Profil, Parametres]. Deux appuis sur Retour ramènent à l'accueil.</p></div><div class="ex"><div class="lvl">Exercice 2 · Moyen — dans exemple2</div><p>Sur le détail d'une recette, ajoutez un bouton « Voir l'auteur » qui ouvre un écran <b>Auteur</b> affichant le nom de l'auteur et son nombre de recettes.</p><b>Correction</b><pre class="kt">@Serializable
+data class Auteur(val nom: String)
+
+// Dans composable&lt;Detail&gt; :
+onVoirAuteur = { navController.navigate(Auteur(nom = recette.auteur)) }
+
+composable&lt;Auteur&gt; { backStackEntry -&gt;
+    val auteur: Auteur = backStackEntry.toRoute()
+    EcranAuteur(nom = auteur.nom, onRetour = { navController.popBackStack() })
+}</pre></div><div class="ex"><div class="lvl">Exercice 3 · Défi — dans exemple3</div><p>Ajoutez un bouton « Se déconnecter » sur l'accueil connecté. Il ramène à l'écran de connexion, et Retour doit alors <b>quitter</b> l'application.</p><b>Correction</b><pre class="kt">onDeconnexion = {                                   // exercice 3
+    navController.navigate(Connexion) {
+        // Vide TOUTE la pile, puis affiche Connexion
+        popUpTo(navController.graph.id) { inclusive = true }
+    }
+}</pre><div class="diagram"><div class="stack"><b>Avant</b><div class="stack-item top">AccueilConnecte</div></div><div class="arrow-r">→</div><div class="stack"><b>Après la déconnexion</b><div class="stack-item top">Connexion</div><small>Retour → quitte l'appli</small></div></div></div></section><section class="chapter"><div class="chapnum">Chapitre 11</div><h1>Aide-mémoire</h1><h3>Déclarer des destinations</h3><pre class="kt">@Serializable object Accueil                      // sans argument
+@Serializable data class Detail(val id: Int)      // avec argument</pre><h3>Le NavHost</h3><pre class="kt">val navController = rememberNavController()
+NavHost(navController, startDestination = Accueil) {
+    composable&lt;Accueil&gt; { EcranAccueil(onOuvrir = { navController.navigate(Detail(it)) }) }
+    composable&lt;Detail&gt;  { entry -&gt; EcranDetail(id = entry.toRoute&lt;Detail&gt;().id) }
+}</pre><h3>Naviguer</h3><pre class="kt">navController.navigate(Detail(42))      // avancer
+navController.popBackStack()            // reculer
+navController.navigateUp()              // flèche ← de la barre du haut</pre><h3>Gérer la pile</h3><pre class="kt">navController.navigate(Accueil) {
+    popUpTo&lt;Connexion&gt; { inclusive = true }   // retirer Connexion
+    launchSingleTop = true                    // pas de doublon
+}</pre><h3>Onglets</h3><pre class="kt">navController.navigate(onglet.route) {
+    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+    launchSingleTop = true
+    restoreState = true
+}</pre><h3>Renvoyer un résultat</h3><pre class="kt">navController.previousBackStackEntry?.savedStateHandle?.set(&quot;note&quot;, 4)   // écran qui répond
+val note by entry.savedStateHandle.getStateFlow(&quot;note&quot;, 0).collectAsState() // écran qui attend</pre><h2>Check-list</h2><ul class="check"><li>Plugin <code>kotlin.serialization</code> + dépendance <code>navigation-compose</code> ajoutés.</li><li>Chaque destination est un <code>object</code> ou une <code>data class</code> avec <code>@Serializable</code>.</li><li>Chaque destination a son <code>composable&lt;...&gt;</code> dans le NavHost.</li><li>Le NavController est créé une seule fois avec <code>rememberNavController()</code>.</li><li>Les écrans reçoivent des lambdas, pas le NavController.</li><li>On transmet des identifiants, pas des objets entiers.</li><li>Les écrans à ne pas revoir (connexion, accueil de bienvenue) sont retirés avec <code>popUpTo</code>.</li></ul></section><section class="chapter"><div class="chapnum">Chapitre 12</div><h1>Le projet Android Studio</h1><h2>Ouvrir et lancer le projet</h2><ol><li>Décompressez l'archive du cours.</li><li>Dans Android Studio : <b>File › Open…</b> puis choisissez le dossier <code>projet/MesRecettes</code>.</li><li>Attendez la fin de la synchronisation Gradle (barre de progression en bas).</li><li>Choisissez un émulateur ou branchez un téléphone, puis cliquez sur ▶ <b>Run 'app'</b>.</li></ol><p>Au lancement, un <b>menu</b> propose les cinq exemples du cours. Chaque exemple est indépendant, dans son propre dossier.</p><table><tr><th>Dossier</th><th>Chapitre</th><th>Ce que vous y trouvez</th></tr><tr><td><code>data/</code></td><td>—</td><td>Les recettes (<code>Recette</code>, <code>recettes</code>, <code>recetteParId</code>).</td></tr><tr><td><code>ui/</code></td><td>—</td><td>Composants communs : <code>BarreDuHaut</code>, <code>CarteRecette</code>, <code>ListeDeRecettes</code>, <code>Etoiles</code>.</td></tr><tr><td><code>exemple1/</code></td><td>3</td><td>Accueil → Profil (+ exercice 1 : Paramètres).</td></tr><tr><td><code>exemple2/</code></td><td>4</td><td>Liste → Détail avec argument (+ exercice 2 : Auteur).</td></tr><tr><td><code>exemple3/</code></td><td>5</td><td>Connexion avec <code>popUpTo</code> (+ exercice 3 : déconnexion).</td></tr><tr><td><code>exemple4/</code></td><td>6</td><td>Barre d'onglets en bas.</td></tr><tr><td><code>exemple5/</code></td><td>7</td><td>Noter une recette : renvoyer un résultat.</td></tr></table><h2>Configuration</h2><ul><li>Android Gradle Plugin 8.7.3, Gradle 8.11.1, Kotlin 2.0.21</li><li>Navigation Compose 2.8.5, Compose BOM 2024.12.01</li><li>minSdk 24 (Android 7.0), targetSdk 35</li></ul><div class="box tip"><b class="t">Expérimentez !</b>Le meilleur moyen d'apprendre : modifiez le code. Retirez <code>inclusive = true</code> dans l'exemple 3, ou <code>restoreState = true</code> dans l'exemple 4, relancez, et observez la différence avec le bouton Retour.</div><div class="box info"><b class="t">Pour aller plus loin</b>Documentation officielle Android (developer.android.com) : « Navigation avec Compose », « Sûreté du typage dans Navigation » et « Barre de navigation ».</div><p style="text-align:center;margin-top:24pt;font-size:13pt;color:var(--p);font-weight:700">Bravo, vous savez maintenant naviguer dans une application Compose ! 🎉</p></section>
+
+<script>
+const KW = new Set("fun val var class object data if else for in return when while is as true false null private const override super this by import package".split(" "));
+document.querySelectorAll("pre.kt").forEach(pre => {
+  const src = pre.textContent;
+  const re = /(\/\/[^\n]*)|("(?:\\.|[^"\\])*")|(@\w+)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
+  let out = "", last = 0, m;
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(last, m.index));
+    const t = esc(m[0]);
+    if (m[1]) out += `<span class="c">${t}</span>`;
+    else if (m[2]) out += `<span class="s">${t}</span>`;
+    else if (m[3]) out += `<span class="a">${t}</span>`;
+    else if (m[4]) out += `<span class="n">${t}</span>`;
+    else if (KW.has(m[0])) out += `<span class="k">${t}</span>`;
+    else if (/^[A-Z]/.test(m[0])) out += `<span class="t">${t}</span>`;
+    else out += t;
+    last = re.lastIndex;
+  }
+  pre.innerHTML = out + esc(src.slice(last));
+});
+</script>
+</body></html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:roundIcon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MesRecettes">
+
+        <!-- Menu principal : un bouton par exemple du cours -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".exemple1.Exemple1Activity" android:exported="false" />
+        <activity android:name=".exemple2.Exemple2Activity" android:exported="false" />
+        <activity android:name=".exemple3.Exemple3Activity" android:exported="false" />
+        <activity android:name=".exemple4.Exemple4Activity" android:exported="false" />
+        <activity android:name=".exemple5.Exemple5Activity" android:exported="false" />
+    </application>
+</manifest>

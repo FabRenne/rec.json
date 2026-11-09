@@ -1,0 +1,4 @@
+<resources>
+    <!-- Thème sans barre d'action : les barres sont dessinées par Compose -->
+    <style name="Theme.MesRecettes" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

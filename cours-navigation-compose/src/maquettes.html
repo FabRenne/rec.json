@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Maquettes écrans</title>
+<style>
+  :root{
+    --primary:#4F55B5; --on-primary:#fff; --primary-container:#E0E0FF; --on-primary-container:#0B0F5E;
+    --surface:#FBF8FF; --surface-c:#EFECF7; --on-surface:#1B1B21; --on-surface-v:#46464F; --outline:#C6C5D0;
+    --secondary-c:#E2E0F9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,sans-serif;background:#fff;padding:30px;display:flex;flex-wrap:wrap;gap:40px}
+  .phone{width:380px;height:780px;border-radius:44px;background:#1d1d22;padding:12px;box-shadow:0 0 0 2px #3a3a42 inset}
+  .screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;position:relative}
+  .status{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:13px;font-weight:600;color:var(--on-surface)}
+  .status .cam{width:12px;height:12px;border-radius:50%;background:#111;position:absolute;left:50%;top:11px;transform:translateX(-50%)}
+  .icons{display:flex;gap:6px;align-items:center}
+  .bar{display:inline-block;width:16px;height:10px;border:1.5px solid var(--on-surface);border-radius:2px;position:relative}
+  .bar::after{content:"";position:absolute;inset:1px;right:4px;background:var(--on-surface)}
+  .appbar{height:64px;display:flex;align-items:center;gap:14px;padding:0 16px;font-size:22px;color:var(--on-surface)}
+  .appbar.colored{background:var(--primary-container);color:var(--on-primary-container)}
+  .back{font-size:24px;width:32px;text-align:center}
+  .content{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .t-large{font-size:28px;font-weight:600;color:var(--on-surface)}
+  .t-body{font-size:16px;line-height:1.5;color:var(--on-surface-v)}
+  .btn{background:var(--primary);color:var(--on-primary);border-radius:24px;height:44px;padding:0 26px;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:15px}
+  .btn.tonal{background:var(--secondary-c);color:var(--on-primary-container)}
+  .card{background:var(--surface-c);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+  .emoji{font-family:"Noto Color Emoji";font-size:30px;width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+  .card .name{font-weight:600;font-size:17px;color:var(--on-surface)}
+  .card .sub{font-size:13px;color:var(--on-surface-v)}
+  .card .chev{margin-left:auto;font-size:22px;color:var(--on-surface-v)}
+  .big-emoji{font-family:"Noto Color Emoji";font-size:110px;line-height:1}
+  .chip{border:1px solid var(--outline);border-radius:8px;padding:8px 12px;font-family:"JetBrains Mono";font-size:12.5px;color:var(--on-surface-v);background:#fff}
+  .nav{height:20px;display:flex;justify-content:center;align-items:center}
+  .nav i{width:110px;height:4px;border-radius:2px;background:var(--on-surface);opacity:.6}
+  .counter{font-size:64px;font-weight:700;color:var(--primary)}
+  .legacy{border:2.5px dashed #E8710A;border-radius:12px;position:relative;padding:28px 14px 16px;background:#FFF6EC}
+  .legacy .tag{position:absolute;top:-12px;left:12px;background:#E8710A;color:#fff;font-size:12px;font-family:"JetBrains Mono";padding:3px 8px;border-radius:6px}
+  .old-title{font-family:Roboto,"DejaVu Sans",sans-serif;font-size:18px;color:#222;margin-bottom:6px}
+  .old-text{font-family:"DejaVu Sans",sans-serif;font-size:14px;color:#444;margin-bottom:12px}
+  .old-btn{background:#D6D7D7;border-radius:2px;padding:10px;text-align:center;font-family:"DejaVu Sans";font-size:13px;letter-spacing:.5px;color:#222;box-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .compose-zone{border:2.5px dashed var(--primary);border-radius:12px;position:relative;padding:22px 14px 14px}
+  .compose-zone .tag{position:absolute;top:-12px;left:12px;background:var(--primary);color:#fff;font-size:12px;font-family:"JetBrains Mono";padding:3px 8px;border-radius:6px}
+  .fab{position:absolute;right:20px;bottom:40px;width:56px;height:56px;border-radius:16px;background:var(--primary-container);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--on-primary-container);box-shadow:0 3px 6px rgba(0,0,0,.2)}
+  .badge{font-size:12px;font-weight:600;background:var(--primary);color:#fff;border-radius:10px;padding:2px 8px;margin-left:auto}
+
+  /* Android Studio panel */
+  .studio{width:520px;background:#2B2D30;border-radius:10px;overflow:hidden;font-family:"JetBrains Mono";font-size:13.5px;color:#DFE1E5;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .studio .top{background:#1E1F22;padding:10px 14px;display:flex;gap:8px;align-items:center;font-family:Inter;font-size:13px;color:#9DA0A8}
+  .studio .dot{width:12px;height:12px;border-radius:50%}
+  .studio .tree{padding:12px 10px 16px}
+  .studio .row{padding:3px 6px;white-space:pre;border-radius:4px}
+  .studio .row.sel{background:#2E436E}
+  .folder{color:#E8BF6A}.kt{color:#6FAFBD}.xml{color:#E07A5F}.gr{color:#9876AA}.note{color:#6F737A;font-style:italic}
+
+  .bottombar{height:80px;background:var(--surface-c);display:flex;justify-content:space-around;align-items:center;padding:0 8px}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--on-surface-v);width:90px}
+  .tab .ic{width:64px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px}
+  .tab.on{color:var(--on-surface);font-weight:700}
+  .tab.on .ic{background:var(--secondary-c)}
+  .field{border:1.5px solid var(--outline);border-radius:6px;height:56px;padding:0 14px;display:flex;align-items:center;font-size:16px;color:var(--on-surface);position:relative;background:#fff}
+  .field label{position:absolute;top:-9px;left:10px;background:var(--surface);padding:0 4px;font-size:12px;color:var(--primary)}
+  .stars{font-size:46px;color:#F2B01E;letter-spacing:6px}
+  .stars .off{color:#C9C7D2}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .pillm{background:var(--secondary-c);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--on-primary-container)}
+  .avatar{width:96px;height:96px;border-radius:50%;background:var(--primary-container);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:var(--primary)}
+  .row-set{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-bottom:1px solid var(--outline);font-size:15px;color:var(--on-surface)}
+  .toggle{width:44px;height:26px;border-radius:13px;background:var(--primary);position:relative}
+  .toggle::after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+</style>
+</head>
+<body>
+<div class="phone" id="ex1-accueil"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Accueil</div>
+  <div class="content center" style="gap:20px"><div class="big-emoji">🏠</div><div class="t-large">Bienvenue !</div><div class="t-body">Ceci est le premier écran<br>(destination <b>Accueil</b>).</div><div class="btn">Voir mon profil</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex1-profil"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored"><span class=back>←</span>Profil</div>
+  <div class="content center" style="gap:16px"><div class="avatar">L</div><div class="t-large">Léa Martin</div><div class="t-body">Cuisinière amatrice 🍳</div><div class="chip">navController.navigate(Profil)</div><div class="btn tonal" style="margin-top:10px">← Retour</div><div class="btn" style="margin-top:4px">Paramètres</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex2-liste"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mes recettes</div>
+  <div class="content" style="gap:10px"><div class="card" style="outline:3px solid var(--primary)"><div class="emoji">🥞</div><div><div class="name">Crêpes</div><div class="sub">20 min · Facile</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🍕</div><div><div class="name">Pizza maison</div><div class="sub">45 min · Moyen</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🥗</div><div><div class="name">Salade fraîcheur</div><div class="sub">10 min · Facile</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🍲</div><div><div class="name">Soupe de légumes</div><div class="sub">35 min · Facile</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🍰</div><div><div class="name">Gâteau au chocolat</div><div class="sub">50 min · Moyen</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🌮</div><div><div class="name">Tacos</div><div class="sub">25 min · Facile</div></div><div class="chev" style="">›</div></div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex2-detail"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored"><span class=back>←</span>Crêpes</div>
+  <div class="content center" style="gap:16px"><div class="big-emoji">🥞</div><div class="t-large">Crêpes</div><div class="meta"><span class="pillm">⏱ 20 min</span><span class="pillm">Facile</span></div><div class="t-body">Mélangez la farine, les œufs et le lait,<br>puis faites cuire à la poêle.</div><div class="chip">backStackEntry.toRoute&lt;Detail&gt;().id = 1</div><div class="btn tonal" style="margin-top:8px">Voir l'auteur</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex3-connexion"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar ">Connexion</div>
+  <div class="content" style="gap:22px;padding-top:40px"><div class="big-emoji" style="text-align:center;font-size:80px">🔐</div><div class="field"><label>Prénom</label>Léa</div><div class="field"><label style="color:var(--on-surface-v)">Mot de passe</label>••••••••</div><div class="btn" style="width:100%;margin-top:6px">Se connecter</div><div class="t-body" style="font-size:13px;text-align:center">Après la connexion, le bouton Retour<br>ne doit PAS revenir ici.</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex3-accueil"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Bonjour Léa 👋</div>
+  <div class="content center" style="gap:18px"><div class="big-emoji">🎉</div><div class="t-large">Vous êtes connectée</div><div class="chip">popUpTo&lt;Connexion&gt; { inclusive = true }</div><div class="t-body" style="font-size:14px">Pile actuelle : [ Accueil ]<br>(l'écran Connexion a été retiré)</div><div class="btn tonal">Se déconnecter</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex4-recettes"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mes recettes</div>
+  <div class="content" style="gap:10px"><div class="card"><div class="emoji">🥞</div><div><div class="name">Crêpes</div><div class="sub">20 min · Facile</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🍕</div><div><div class="name">Pizza maison</div><div class="sub">45 min · Moyen</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🥗</div><div><div class="name">Salade fraîcheur</div><div class="sub">10 min · Facile</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🍲</div><div><div class="name">Soupe de légumes</div><div class="sub">35 min · Facile</div></div><div class="chev" style="">›</div></div><div class="card"><div class="emoji">🍰</div><div><div class="name">Gâteau au chocolat</div><div class="sub">50 min · Moyen</div></div><div class="chev" style="">›</div></div></div>
+  <div class="bottombar"><div class="tab on"><div class="ic"><span style="font-family:Noto Color Emoji">🏠</span></div>Recettes</div><div class="tab"><div class="ic">♥</div>Favoris</div><div class="tab"><div class="ic"><span style="font-family:Noto Color Emoji">👤</span></div>Profil</div></div>
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex4-favoris"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mes favoris</div>
+  <div class="content" style="gap:10px"><div class="card"><div class="emoji">🥞</div><div><div class="name">Crêpes</div><div class="sub">20 min · Facile</div></div><div class="chev" style="color:#D33">♥</div></div><div class="card"><div class="emoji">🍰</div><div><div class="name">Gâteau au chocolat</div><div class="sub">50 min · Moyen</div></div><div class="chev" style="color:#D33">♥</div></div></div>
+  <div class="bottombar"><div class="tab"><div class="ic"><span style="font-family:Noto Color Emoji">🏠</span></div>Recettes</div><div class="tab on"><div class="ic">♥</div>Favoris</div><div class="tab"><div class="ic"><span style="font-family:Noto Color Emoji">👤</span></div>Profil</div></div>
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex4-profil"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mon profil</div>
+  <div class="content" style="gap:6px"><div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px 0 16px"><div class="avatar">L</div><div class="t-large" style="font-size:22px">Léa Martin</div></div><div class="row-set">Notifications <span class="toggle"></span></div><div class="row-set">Recettes publiées <b>12</b></div><div class="row-set">Membre depuis <b>2024</b></div></div>
+  <div class="bottombar"><div class="tab"><div class="ic"><span style="font-family:Noto Color Emoji">🏠</span></div>Recettes</div><div class="tab"><div class="ic">♥</div>Favoris</div><div class="tab on"><div class="ic"><span style="font-family:Noto Color Emoji">👤</span></div>Profil</div></div>
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex5-detail"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored"><span class=back>←</span>Pizza maison</div>
+  <div class="content center" style="gap:16px"><div class="big-emoji">🍕</div><div class="t-large">Pizza maison</div><div class="t-body">Votre note :</div><div class="stars">★★★★<span class="off">★</span></div><div class="chip">savedStateHandle["note"] = 4</div><div class="btn">Noter cette recette</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="phone" id="ex5-noter"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored"><span class=back>←</span>Noter « Pizza maison »</div>
+  <div class="content center" style="gap:24px"><div class="t-body">Touchez les étoiles pour choisir<br>votre note :</div><div class="stars" style="font-size:54px">★★★★<span class="off">★</span></div><div class="t-large">4 / 5</div><div class="btn">Valider</div><div class="t-body" style="font-size:13px">La note est renvoyée à l'écran précédent,<br>puis on revient en arrière.</div></div>
+  
+  <div class="nav"><i></i></div>
+</div></div>
+<div class="studio" id="studio-arbo">
+  <div class="top"><span class="dot" style="background:#FF5F57"></span><span class="dot" style="background:#FEBC2E"></span><span class="dot" style="background:#28C840"></span>&nbsp; Project — MesRecettes</div>
+  <div class="tree">
+    <div class="row"><span class="folder">▾ 📁 app/src/main/java/com/exemple/mesrecettes</span></div>
+    <div class="row">    <span class="kt">MainActivity.kt</span>          <span class="note">← menu des exemples</span></div>
+    <div class="row">    <span class="folder">▸ 📁 data</span>                  <span class="note">← les recettes</span></div>
+    <div class="row">    <span class="folder">▸ 📁 ui</span>                    <span class="note">← composants communs</span></div>
+    <div class="row sel">    <span class="folder">▾ 📁 exemple1</span>              <span class="note">← chapitre 3</span></div>
+    <div class="row">        <span class="kt">Routes.kt</span>            <span class="note">← les destinations</span></div>
+    <div class="row">        <span class="kt">Exemple1Activity.kt</span>  <span class="note">← le NavHost</span></div>
+    <div class="row">        <span class="kt">Ecrans.kt</span>            <span class="note">← les @Composable</span></div>
+    <div class="row">    <span class="folder">▸ 📁 exemple2 … exemple5</span>   <span class="note">← chapitres 4 à 7</span></div>
+    <div class="row"><span class="gr">app/build.gradle.kts</span>         <span class="note">← dépendances</span></div>
+    <div class="row"><span class="gr">gradle/libs.versions.toml</span>    <span class="note">← versions</span></div>
+  </div>
+</div>
+</body></html>
