@@ -1,0 +1,4 @@
+<resources>
+    <!-- Thème AppCompat sans barre d'action : la barre de titre est dessinée par Compose -->
+    <style name="Theme.MesFruits" parent="Theme.AppCompat.Light.NoActionBar" />
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:roundIcon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MesFruits">
+
+        <!-- Menu principal : liste des exemples du cours -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Chapitre 3 : Compose dans un Fragment -->
+        <activity android:name=".exemple1.Exemple1Activity" android:exported="false" />
+        <!-- Chapitres 4, 5 et 6 : navigation, arguments, ViewModel partagé -->
+        <activity android:name=".fragments.FragmentsActivity" android:exported="false" />
+        <!-- Chapitre 7 : AndroidFragment dans Compose -->
+        <activity android:name=".exemple5.Exemple5Activity" android:exported="false" />
+        <!-- Chapitre 8 : 100 % Compose avec Navigation Compose -->
+        <activity android:name=".exemple6.Exemple6Activity" android:exported="false" />
+    </application>
+</manifest>
