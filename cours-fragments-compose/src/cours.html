@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Les Fragments avec Jetpack Compose</title>
+<style>
+  :root{--p:#4F55B5;--pc:#E0E0FF;--ink:#1B1B21;--mute:#55555F;--line:#DCDCE6;--code-bg:#1E1F29;--ok:#1E7B4C;--warn:#B3540A;--bad:#B3261E}
+  *{box-sizing:border-box}
+  html{font-family:Inter,sans-serif;color:var(--ink);font-size:10.6pt;line-height:1.55}
+  body{margin:0}
+  h1{font-size:22pt;margin:0 0 6pt;color:var(--p);letter-spacing:-.3px}
+  h2{font-size:13.5pt;margin:20pt 0 6pt;color:var(--ink)}
+  h3{font-size:11.5pt;margin:14pt 0 4pt;color:var(--p)}
+  p{margin:0 0 8pt}
+  ul,ol{margin:0 0 8pt;padding-left:18pt} li{margin-bottom:3pt}
+  code{font-family:"JetBrains Mono",monospace;font-size:9pt;background:#EEEEF6;padding:1px 4px;border-radius:3px}
+  pre{font-variant-ligatures:none;font-family:"JetBrains Mono",monospace;font-size:8.6pt;line-height:1.5;background:var(--code-bg);color:#E6E6EE;padding:10pt 12pt;border-radius:8px;margin:4pt 0 10pt;white-space:pre-wrap;position:relative}
+  pre[data-file]::before{content:attr(data-file);display:block;color:#9FA3C9;font-size:7.8pt;margin-bottom:6pt;border-bottom:1px solid #393B4D;padding-bottom:4pt}
+  pre .k{color:#C792EA} pre .s{color:#C3E88D} pre .c{color:#7F849C;font-style:italic} pre .a{color:#FFCB6B} pre .n{color:#F78C6C} pre .t{color:#82AAFF}
+  .chapter{break-before:page}
+  .chapnum{font-size:9pt;font-weight:700;letter-spacing:2px;color:var(--mute);text-transform:uppercase}
+  .box{border-radius:10px;padding:9pt 12pt;margin:8pt 0 10pt;break-inside:avoid;border-left:5px solid}
+  .box b.t{display:block;margin-bottom:2pt}
+  .info{background:#EEF0FF;border-color:var(--p)}
+  .tip{background:#E9F6EF;border-color:var(--ok)}
+  .warn{background:#FFF3E6;border-color:var(--warn)}
+  .err{background:#FCEBEA;border-color:var(--bad)}
+  table{border-collapse:collapse;width:100%;margin:6pt 0 12pt;font-size:9.6pt;break-inside:avoid}
+  th,td{border:1px solid var(--line);padding:5pt 7pt;text-align:left;vertical-align:top}
+  th{background:var(--pc)}
+  figure{margin:8pt 0 12pt;text-align:center;break-inside:avoid}
+  figure img{height:330px}
+  figure.one img{height:380px}
+  figure.wide img{height:auto;width:44%}
+  figcaption{font-size:8.6pt;color:var(--mute);margin-top:4pt}
+  .duo{display:flex;justify-content:center;align-items:center;gap:14pt}
+  .duo .arrow{font-size:26pt;color:var(--p);font-weight:700}
+  .duo .arrow small{display:block;font-size:7.5pt;font-weight:500;color:var(--mute)}
+  .split{display:flex;gap:16pt;align-items:flex-start}
+  .split > div{flex:1}
+  .split figure img{height:360px}
+
+  /* couverture */
+  .cover{height:255mm;display:flex;flex-direction:column;justify-content:center;padding:0 6mm}
+  .cover .kicker{font-weight:700;color:var(--p);letter-spacing:3px;font-size:10pt}
+  .cover h1{font-size:38pt;line-height:1.1;color:var(--ink);margin:10pt 0 12pt}
+  .cover h1 span{color:var(--p)}
+  .cover .sub{font-size:13pt;color:var(--mute);max-width:130mm}
+  .cover .pill{display:inline-block;margin:24pt 6pt 0 0;padding:4pt 10pt;border-radius:20px;background:var(--pc);font-size:9pt;font-weight:600;color:#0B0F5E}
+  .cover .imgs{display:flex;gap:12pt;margin-top:30pt}
+  .cover .imgs img{height:390px}
+
+  /* sommaire */
+  .toc ol{list-style:none;padding:0;counter-reset:c}
+  .toc li{display:flex;gap:10pt;padding:6pt 0;border-bottom:1px dotted var(--line);font-size:11pt}
+  .toc li span.n{color:var(--p);font-weight:700;width:22pt}
+  .toc li span.d{margin-left:auto;color:var(--mute);font-size:9pt}
+
+  /* schémas */
+  .diagram{display:flex;align-items:stretch;justify-content:center;gap:8pt;margin:10pt 0 14pt;break-inside:avoid}
+  .node{border:2px solid var(--p);border-radius:10px;padding:8pt 10pt;background:#fff;text-align:center;font-size:9.4pt;min-width:105pt}
+  .node b{display:block;color:var(--p);font-size:10pt}
+  .node.fill{background:var(--pc)}
+  .node.orange{border-color:#E8710A} .node.orange b{color:#E8710A}
+  .arrow-r{align-self:center;color:var(--p);font-size:18pt;font-weight:700}
+  .nest{border:2px solid var(--ink);border-radius:12px;padding:20pt 10pt 10pt;position:relative;background:#FAFAFD}
+  .nest > .lbl{position:absolute;top:5pt;left:10pt;font-size:8.5pt;font-weight:700;color:var(--mute)}
+  .life{display:flex;gap:4pt;flex-wrap:wrap;justify-content:center;margin:8pt 0 12pt}
+  .life div{background:var(--pc);border-radius:6px;padding:4pt 8pt;font-family:"JetBrains Mono";font-size:8.4pt}
+  .life div.hl{background:var(--p);color:#fff}
+  .life span{align-self:center;color:var(--p);font-weight:700}
+
+  .ex{border:1.5px solid var(--line);border-radius:10px;padding:10pt 12pt;margin:8pt 0;break-inside:avoid}
+  .ex .lvl{font-size:8pt;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px}
+  .check li{list-style:none;margin-left:-14pt}
+  .check li::before{content:"☐  ";color:var(--p)}
+</style>
+</head>
+<body>
+
+<!-- ================= COUVERTURE ================= -->
+<section class="cover">
+  <div class="kicker">COURS DÉBUTANT · ANDROID</div>
+  <h1>Les <span>Fragments</span><br>avec Jetpack Compose</h1>
+  <div class="sub">Comprendre ce qu'est un Fragment, comment le faire cohabiter avec Compose, et comment s'en passer — avec des exemples simples à copier-coller et des captures d'écran.</div>
+  <div>
+    <span class="pill">Kotlin</span><span class="pill">Jetpack Compose</span><span class="pill">Fragments</span><span class="pill">Navigation</span>
+  </div>
+  <div class="imgs">
+    <img src="../captures/ecran-liste.png" alt="">
+    <img src="../captures/ecran-detail.png" alt="">
+    <img src="../captures/ecran-androidfragment.png" alt="">
+  </div>
+</section>
+
+<!-- ================= SOMMAIRE ================= -->
+<section class="chapter toc">
+  <h1>Sommaire</h1>
+  <ol>
+    <li><span class="n">1</span>Les idées de base : Activity, Fragment, Composable<span class="d">en 5 minutes</span></li>
+    <li><span class="n">2</span>Préparer le projet (Gradle)<span class="d">configuration</span></li>
+    <li><span class="n">3</span>Exemple 1 — Afficher du Compose dans un Fragment<span class="d">ComposeView</span></li>
+    <li><span class="n">4</span>Exemple 2 — Naviguer entre deux Fragments<span class="d">FragmentManager</span></li>
+    <li><span class="n">5</span>Exemple 3 — Passer des données (arguments)<span class="d">Bundle</span></li>
+    <li><span class="n">6</span>Exemple 4 — Partager des données avec un ViewModel<span class="d">activityViewModels</span></li>
+    <li><span class="n">7</span>Exemple 5 — Afficher un ancien Fragment dans Compose<span class="d">AndroidFragment</span></li>
+    <li><span class="n">8</span>Exemple 6 — Le 100 % Compose : remplacer les Fragments<span class="d">Navigation Compose</span></li>
+    <li><span class="n">9</span>Le cycle de vie, sans se perdre<span class="d">ViewCompositionStrategy</span></li>
+    <li><span class="n">10</span>Les erreurs fréquentes du débutant<span class="d">et leurs solutions</span></li>
+    <li><span class="n">11</span>Exercices corrigés<span class="d">pratique</span></li>
+    <li><span class="n">12</span>Aide-mémoire<span class="d">à garder sous la main</span></li>
+  </ol>
+  <div class="box info" style="margin-top:22pt"><b class="t">À qui s'adresse ce cours ?</b>
+    À toute personne qui connaît les bases de Kotlin (variables, fonctions, classes) et qui a déjà créé un projet dans Android Studio. Aucune connaissance préalable des Fragments n'est nécessaire.</div>
+  <div class="box tip"><b class="t">Comment lire ce cours</b>
+    Chaque exemple est <b>complet</b> : vous pouvez copier le code dans un nouveau projet Android Studio (modèle « Empty Activity ») et le lancer. Les captures montrent le résultat attendu à l'écran.</div>
+  <div class="box warn"><b class="t">À propos des captures d'écran</b>
+    Les captures de ce document sont des rendus fidèles des écrans produits par le code de chaque exemple (thème Material 3 par défaut). Selon votre téléphone, votre version d'Android et vos couleurs, l'apparence peut varier légèrement.</div>
+</section>
+
+<!-- ================= CHAPITRE 1 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 1</div>
+  <h1>Les idées de base</h1>
+  <p>Avant d'écrire du code, posons trois mots de vocabulaire. Imaginez une application comme une <b>maison</b> :</p>
+  <table>
+    <tr><th style="width:22%">Élément</th><th style="width:35%">Dans la maison</th><th>Dans Android</th></tr>
+    <tr><td><b>Activity</b></td><td>La maison elle-même</td><td>Le point d'entrée de l'application, une fenêtre plein écran. En général, une seule suffit.</td></tr>
+    <tr><td><b>Fragment</b></td><td>Une pièce de la maison</td><td>Un morceau d'écran réutilisable, avec son propre cycle de vie, placé <i>dans</i> une Activity. On peut changer de pièce sans quitter la maison.</td></tr>
+    <tr><td><b>Composable</b></td><td>Les meubles et la déco</td><td>Une fonction Kotlin annotée <code>@Composable</code> qui <b>dessine</b> l'interface (textes, boutons, listes…).</td></tr>
+  </table>
+
+  <div class="diagram">
+    <div class="nest" style="width:100%">
+      <span class="lbl">ACTIVITY (MainActivity)</span>
+      <div style="display:flex;gap:10pt;justify-content:center">
+        <div class="nest" style="flex:1;background:#fff"><span class="lbl">FRAGMENT (ListeFragment)</span>
+          <div class="node fill"><b>@Composable</b>EcranListe()</div></div>
+        <div class="arrow-r">⇄</div>
+        <div class="nest" style="flex:1;background:#fff"><span class="lbl">FRAGMENT (DetailFragment)</span>
+          <div class="node fill"><b>@Composable</b>EcranDetail()</div></div>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:8.6pt;color:var(--mute);margin-top:-6pt">Schéma : une Activity contient des Fragments, et chaque Fragment affiche des Composables.</p>
+
+  <h2>Fragment ou Compose : faut-il choisir ?</h2>
+  <p>Les Fragments existent depuis 2011, bien avant Compose. Ils ont été pensés pour le système de vues XML. Jetpack Compose, lui, est la façon <b>moderne</b> de construire des interfaces Android.</p>
+  <p>Aujourd'hui, Google recommande pour les <b>nouvelles applications</b> d'écrire tous les écrans en Compose, avec <b>une seule Activity</b> et <b>Navigation Compose</b> — sans Fragment. Mais vous rencontrerez des Fragments partout :</p>
+  <ul>
+    <li>dans les applications existantes, que l'on migre <b>petit à petit</b> vers Compose ;</li>
+    <li>dans certaines bibliothèques qui fournissent encore leurs écrans sous forme de Fragment (cartes, paiement, préférences…) ;</li>
+    <li>dans les offres d'emploi et les tests techniques !</li>
+  </ul>
+  <div class="box info"><b class="t">Le bon réflexe</b>
+    Savoir <b>faire cohabiter</b> Fragments et Compose (chapitres 3 à 7), puis savoir <b>s'en passer</b> (chapitre 8). C'est exactement le chemin de ce cours.</div>
+
+  <h2>Les trois situations possibles</h2>
+  <table>
+    <tr><th>Situation</th><th>Outil à utiliser</th><th>Chapitre</th></tr>
+    <tr><td>J'ai un Fragment et je veux y dessiner avec Compose</td><td><code>ComposeView</code> (ou <code>content { }</code>)</td><td>3 à 6</td></tr>
+    <tr><td>J'ai un écran Compose et je dois y afficher un ancien Fragment</td><td><code>AndroidFragment&lt;T&gt;()</code></td><td>7</td></tr>
+    <tr><td>Je démarre un projet neuf</td><td>Navigation Compose, pas de Fragment</td><td>8</td></tr>
+  </table>
+</section>
+
+<!-- ================= CHAPITRE 2 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 2</div>
+  <h1>Préparer le projet</h1>
+  <p>Créez un projet dans Android Studio avec le modèle <b>Empty Activity</b> (qui active déjà Compose). Nommez-le <b>MesFruits</b>. Voici la structure que nous allons obtenir :</p>
+  <figure class="wide"><img src="../captures/studio-arbo.png" alt=""><figcaption>Capture 1 — Structure du projet dans Android Studio (vue « Project »).</figcaption></figure>
+
+  <h2>Ajouter les dépendances</h2>
+  <p>Ouvrez <code>app/build.gradle.kts</code> et ajoutez les bibliothèques <b>Fragment</b> dans le bloc <code>dependencies</code> :</p>
+<pre data-file="app/build.gradle.kts">dependencies {
+    <span class="c">// Déjà présentes avec le modèle « Empty Activity »</span>
+    implementation(platform(<span class="s">"androidx.compose:compose-bom:2024.12.01"</span>))
+    implementation(<span class="s">"androidx.compose.material3:material3"</span>)
+    implementation(<span class="s">"androidx.activity:activity-compose:1.9.3"</span>)
+
+    <span class="c">// À AJOUTER pour les Fragments</span>
+    implementation(<span class="s">"androidx.fragment:fragment-ktx:1.8.5"</span>)       <span class="c">// Fragments + raccourcis Kotlin</span>
+    implementation(<span class="s">"androidx.fragment:fragment-compose:1.8.5"</span>)   <span class="c">// pont Fragment ⇄ Compose</span>
+    implementation(<span class="s">"androidx.appcompat:appcompat:1.7.0"</span>)         <span class="c">// AppCompatActivity</span>
+    implementation(<span class="s">"androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7"</span>)
+}</pre>
+  <div class="box warn"><b class="t">Les numéros de version</b>
+    Les versions indiquées fonctionnent ensemble, mais des versions plus récentes existent sûrement quand vous lisez ce cours. Android Studio souligne en jaune les dépendances obsolètes : <b>Alt + Entrée</b> propose de les mettre à jour.</div>
+  <p>Cliquez ensuite sur <b>Sync Now</b> (bandeau en haut de l'éditeur) pour télécharger les bibliothèques.</p>
+
+  <h2>Le thème de l'Activity</h2>
+  <p>Comme nous utiliserons <code>AppCompatActivity</code>, l'Activity doit avoir un thème <b>AppCompat</b>. Dans <code>AndroidManifest.xml</code>, vérifiez la ligne <code>android:theme</code> :</p>
+<pre data-file="app/src/main/AndroidManifest.xml">&lt;activity
+    android:name=<span class="s">".MainActivity"</span>
+    android:exported=<span class="s">"true"</span>
+    android:theme=<span class="s">"@style/Theme.AppCompat.Light.NoActionBar"</span>&gt;
+    ...
+&lt;/activity&gt;</pre>
+  <div class="box tip"><b class="t">Pourquoi « NoActionBar » ?</b>
+    Parce que la barre de titre sera dessinée par Compose (<code>TopAppBar</code>). Sans cela, vous auriez deux barres de titre l'une sur l'autre.</div>
+</section>
+
+<!-- ================= CHAPITRE 3 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 3 · Exemple 1</div>
+  <h1>Afficher du Compose dans un Fragment</h1>
+  <p><b>Objectif :</b> créer un Fragment qui affiche un texte et un compteur de clics écrits en Compose.</p>
+
+  <h2>Étape 1 — Le conteneur dans l'Activity</h2>
+  <p>Un Fragment a besoin d'un <b>emplacement</b> où s'afficher : c'est le <code>FragmentContainerView</code>. On le déclare dans un petit fichier XML.</p>
+<pre data-file="app/src/main/res/layout/activity_main.xml">&lt;androidx.fragment.app.FragmentContainerView
+    xmlns:android=<span class="s">"http://schemas.android.com/apk/res/android"</span>
+    android:id=<span class="s">"@+id/conteneur"</span>
+    android:layout_width=<span class="s">"match_parent"</span>
+    android:layout_height=<span class="s">"match_parent"</span> /&gt;</pre>
+
+  <h2>Étape 2 — L'Activity hôte</h2>
+<pre data-file="MainActivity.kt"><span class="k">class</span> <span class="t">MainActivity</span> : <span class="t">AppCompatActivity</span>() {
+    <span class="k">override fun</span> onCreate(savedInstanceState: <span class="t">Bundle</span>?) {
+        <span class="k">super</span>.onCreate(savedInstanceState)
+        setContentView(R.layout.<span class="a">activity_main</span>)
+
+        <span class="c">// On n'ajoute le Fragment qu'au PREMIER lancement</span>
+        <span class="k">if</span> (savedInstanceState == <span class="k">null</span>) {
+            supportFragmentManager.commit {
+                replace(R.id.<span class="a">conteneur</span>, <span class="t">PremierFragment</span>())
+            }
+        }
+    }
+}</pre>
+  <div class="box info"><b class="t">Pourquoi tester <code>savedInstanceState == null</code> ?</b>
+    Quand on tourne le téléphone, Android recrée l'Activity <b>et restaure automatiquement</b> les Fragments. Sans ce test, on en ajouterait un deuxième par-dessus !</div>
+
+  <h2>Étape 3 — Le Fragment qui affiche du Compose</h2>
+  <p>Un Fragment classique renvoie une <code>View</code> dans <code>onCreateView</code>. L'astuce : renvoyer une <b><code>ComposeView</code></b>, une vue spéciale qui sait afficher des Composables.</p>
+<pre data-file="PremierFragment.kt"><span class="k">class</span> <span class="t">PremierFragment</span> : <span class="t">Fragment</span>() {
+
+    <span class="k">override fun</span> onCreateView(
+        inflater: <span class="t">LayoutInflater</span>,
+        container: <span class="t">ViewGroup</span>?,
+        savedInstanceState: <span class="t">Bundle</span>?
+    ): <span class="t">View</span> {
+        <span class="k">return</span> <span class="t">ComposeView</span>(requireContext()).apply {
+            <span class="c">// Libère Compose quand la vue du Fragment est détruite (voir chap. 9)</span>
+            setViewCompositionStrategy(
+                <span class="t">ViewCompositionStrategy</span>.<span class="t">DisposeOnViewTreeLifecycleDestroyed</span>
+            )
+            setContent {
+                <span class="t">MaterialTheme</span> {
+                    EcranPremierFragment()
+                }
+            }
+        }
+    }
+}</pre>
+</section>
+
+<section>
+  <h2 style="margin-top:0">Étape 4 — Le Composable</h2>
+  <div class="split">
+    <div>
+<pre data-file="Ecrans.kt"><span class="a">@OptIn</span>(<span class="t">ExperimentalMaterial3Api</span>::<span class="k">class</span>)
+<span class="a">@Composable</span>
+<span class="k">fun</span> EcranPremierFragment() {
+    <span class="c">// "remember" garde la valeur entre deux dessins</span>
+    <span class="k">var</span> clics <span class="k">by</span> remember { mutableIntStateOf(<span class="n">0</span>) }
+
+    <span class="t">Scaffold</span>(
+        topBar = {
+            <span class="t">TopAppBar</span>(title = { <span class="t">Text</span>(<span class="s">"Mon premier Fragment"</span>) })
+        }
+    ) { padding <span class="k">-></span>
+        <span class="t">Column</span>(
+            modifier = <span class="t">Modifier</span>
+                .padding(padding)
+                .fillMaxSize(),
+            horizontalAlignment = <span class="t">Alignment</span>.CenterHorizontally,
+            verticalArrangement = <span class="t">Arrangement</span>.Center
+        ) {
+            <span class="t">Text</span>(<span class="s">"Bonjour ! 👋"</span>,
+                style = <span class="t">MaterialTheme</span>.typography.headlineMedium)
+            <span class="t">Text</span>(<span class="s">"Ce texte est dessiné par Jetpack Compose,"</span> +
+                 <span class="s">" à l'intérieur d'un Fragment."</span>)
+            <span class="t">Spacer</span>(<span class="t">Modifier</span>.height(<span class="n">24</span>.dp))
+            <span class="t">Text</span>(<span class="s">"Nombre de clics"</span>)
+            <span class="t">Text</span>(<span class="s">"$clics"</span>,
+                style = <span class="t">MaterialTheme</span>.typography.displayLarge)
+            <span class="t">Button</span>(onClick = { clics++ }) {
+                <span class="t">Text</span>(<span class="s">"Cliquer ici"</span>)
+            }
+        }
+    }
+}</pre>
+    </div>
+    <div style="flex:0 0 auto">
+      <figure><img src="../captures/ecran-premier-fragment.png" alt=""><figcaption>Capture 2 — Résultat après 3 clics.</figcaption></figure>
+    </div>
+  </div>
+
+  <h2>Ce qu'il faut retenir</h2>
+  <ol>
+    <li>Le <b>FragmentContainerView</b> est la « place de parking » du Fragment dans l'Activity.</li>
+    <li><b>supportFragmentManager.commit { replace(...) }</b> place un Fragment dans ce conteneur.</li>
+    <li>Dans le Fragment, <b>ComposeView + setContent { }</b> permet d'écrire toute l'interface en Compose.</li>
+  </ol>
+
+  <div class="box tip"><b class="t">Raccourci avec fragment-compose</b>
+    La bibliothèque <code>fragment-compose</code> fournit une fonction <code>content { }</code> qui crée la <code>ComposeView</code> et choisit la bonne stratégie pour vous :
+<pre style="margin-top:6pt"><span class="k">import</span> androidx.fragment.compose.content
+
+<span class="k">class</span> <span class="t">PremierFragment</span> : <span class="t">Fragment</span>() {
+    <span class="k">override fun</span> onCreateView(inflater: <span class="t">LayoutInflater</span>, container: <span class="t">ViewGroup</span>?,
+                              savedInstanceState: <span class="t">Bundle</span>?) = content {
+        <span class="t">MaterialTheme</span> { EcranPremierFragment() }
+    }
+}</pre>
+    Dans la suite du cours, nous utiliserons ce raccourci : c'est plus court et on ne peut pas oublier la stratégie.</div>
+</section>
+
+<!-- ================= CHAPITRE 4 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 4 · Exemple 2</div>
+  <h1>Naviguer entre deux Fragments</h1>
+  <p><b>Objectif :</b> une liste de fruits (écran 1). Quand on touche un fruit, on ouvre un écran de détail (écran 2). Le bouton « Retour » du téléphone ramène à la liste.</p>
+
+  <div class="duo">
+    <figure style="margin:0"><img src="../captures/ecran-liste.png" alt="" style="height:320px"><figcaption>Capture 3 — ListeFragment</figcaption></figure>
+    <div class="arrow">→<small>clic sur<br>« Fraise »</small></div>
+    <figure style="margin:0"><img src="../captures/ecran-detail.png" alt="" style="height:320px"><figcaption>Capture 4 — DetailFragment</figcaption></figure>
+  </div>
+
+  <h2>Le principe : la « pile » de retour (back stack)</h2>
+  <p>Le <b>FragmentManager</b> range les écrans comme une pile d'assiettes : on pose le nouvel écran <b>dessus</b>, et le bouton Retour <b>retire</b> l'assiette du dessus.</p>
+  <div class="diagram">
+    <div class="node"><b>Au démarrage</b>[ ListeFragment ]</div>
+    <div class="arrow-r">→</div>
+    <div class="node fill"><b>Après le clic</b>[ ListeFragment ]<br>[ DetailFragment ] ← visible</div>
+    <div class="arrow-r">→</div>
+    <div class="node"><b>Après « Retour »</b>[ ListeFragment ]</div>
+  </div>
+
+  <h2>Le Composable de la liste</h2>
+  <p>Remarquez que le Composable <b>ne connaît pas</b> les Fragments : il reçoit simplement une fonction <code>onFruitClique</code>. C'est une très bonne habitude, qui permettra de le réutiliser au chapitre 8.</p>
+<pre data-file="Ecrans.kt"><span class="k">data class</span> <span class="t">Fruit</span>(<span class="k">val</span> nom: <span class="t">String</span>, <span class="k">val</span> emoji: <span class="t">String</span>, <span class="k">val</span> description: <span class="t">String</span>)
+
+<span class="k">val</span> fruits = listOf(
+    <span class="t">Fruit</span>(<span class="s">"Pomme"</span>, <span class="s">"🍎"</span>, <span class="s">"Croquante et sucrée"</span>),
+    <span class="t">Fruit</span>(<span class="s">"Banane"</span>, <span class="s">"🍌"</span>, <span class="s">"Pleine d'énergie"</span>),
+    <span class="t">Fruit</span>(<span class="s">"Raisin"</span>, <span class="s">"🍇"</span>, <span class="s">"À picorer"</span>),
+    <span class="t">Fruit</span>(<span class="s">"Fraise"</span>, <span class="s">"🍓"</span>, <span class="s">"Le fruit de l'été"</span>),
+    <span class="t">Fruit</span>(<span class="s">"Orange"</span>, <span class="s">"🍊"</span>, <span class="s">"Pleine de vitamine C"</span>),
+    <span class="t">Fruit</span>(<span class="s">"Kiwi"</span>, <span class="s">"🥝"</span>, <span class="s">"Petit mais costaud"</span>),
+)
+
+<span class="a">@OptIn</span>(<span class="t">ExperimentalMaterial3Api</span>::<span class="k">class</span>)
+<span class="a">@Composable</span>
+<span class="k">fun</span> EcranListe(onFruitClique: (<span class="t">Fruit</span>) <span class="k">-></span> <span class="t">Unit</span>) {
+    <span class="t">Scaffold</span>(topBar = { <span class="t">TopAppBar</span>(title = { <span class="t">Text</span>(<span class="s">"Mes fruits"</span>) }) }) { padding <span class="k">-></span>
+        <span class="t">LazyColumn</span>(
+            contentPadding = padding,
+            verticalArrangement = <span class="t">Arrangement</span>.spacedBy(<span class="n">8</span>.dp),
+            modifier = <span class="t">Modifier</span>.padding(horizontal = <span class="n">16</span>.dp)
+        ) {
+            items(fruits) { fruit <span class="k">-></span>
+                <span class="t">Card</span>(onClick = { onFruitClique(fruit) }, modifier = <span class="t">Modifier</span>.fillMaxWidth()) {
+                    <span class="t">Row</span>(<span class="t">Modifier</span>.padding(<span class="n">16</span>.dp), verticalAlignment = <span class="t">Alignment</span>.CenterVertically) {
+                        <span class="t">Text</span>(fruit.emoji, fontSize = <span class="n">32</span>.sp)
+                        <span class="t">Spacer</span>(<span class="t">Modifier</span>.width(<span class="n">16</span>.dp))
+                        <span class="t">Column</span> {
+                            <span class="t">Text</span>(fruit.nom, style = <span class="t">MaterialTheme</span>.typography.titleMedium)
+                            <span class="t">Text</span>(fruit.description, style = <span class="t">MaterialTheme</span>.typography.bodySmall)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+</section>
+
+<section>
+  <h2 style="margin-top:0">Le Fragment de la liste</h2>
+  <p>C'est ici que l'on fait le lien : quand un fruit est cliqué, on demande au FragmentManager d'afficher le <code>DetailFragment</code>.</p>
+<pre data-file="ListeFragment.kt"><span class="k">class</span> <span class="t">ListeFragment</span> : <span class="t">Fragment</span>() {
+
+    <span class="k">override fun</span> onCreateView(inflater: <span class="t">LayoutInflater</span>, container: <span class="t">ViewGroup</span>?,
+                              savedInstanceState: <span class="t">Bundle</span>?) = content {
+        <span class="t">MaterialTheme</span> {
+            EcranListe(onFruitClique = { fruit <span class="k">-></span> ouvrirDetail(fruit.nom) })
+        }
+    }
+
+    <span class="k">private fun</span> ouvrirDetail(nom: <span class="t">String</span>) {
+        parentFragmentManager.commit {
+            setReorderingAllowed(<span class="k">true</span>)                           <span class="c">// bonne pratique</span>
+            replace(R.id.<span class="a">conteneur</span>, <span class="t">DetailFragment</span>.nouveau(nom))   <span class="c">// on remplace l'écran</span>
+            addToBackStack(<span class="k">null</span>)                                <span class="c">// pour que « Retour » marche</span>
+        }
+    }
+}</pre>
+  <div class="box err"><b class="t">Oubli classique : addToBackStack</b>
+    Sans <code>addToBackStack(null)</code>, l'appui sur Retour <b>ferme l'application</b> au lieu de revenir à la liste, car la transaction n'a pas été mémorisée.</div>
+
+  <p>Et dans <code>MainActivity</code>, on affiche maintenant <code>ListeFragment()</code> au démarrage :</p>
+<pre data-file="MainActivity.kt (extrait)"><span class="k">if</span> (savedInstanceState == <span class="k">null</span>) {
+    supportFragmentManager.commit { replace(R.id.<span class="a">conteneur</span>, <span class="t">ListeFragment</span>()) }
+}</pre>
+
+  <h2>Le Fragment de détail</h2>
+  <p>Le <code>DetailFragment</code> est présenté en détail au chapitre suivant, car il doit <b>recevoir</b> le nom du fruit. Pour le bouton « Retour » dessiné à l'écran, une seule ligne suffit :</p>
+<pre><span class="c">// Simule l'appui sur le bouton Retour du téléphone</span>
+requireActivity().onBackPressedDispatcher.onBackPressed()
+
+<span class="c">// ou, directement avec le FragmentManager :</span>
+parentFragmentManager.popBackStack()</pre>
+
+  <table>
+    <tr><th>Méthode</th><th>Effet</th></tr>
+    <tr><td><code>add(id, fragment)</code></td><td>Ajoute le Fragment <b>par-dessus</b> l'actuel (les deux existent).</td></tr>
+    <tr><td><code>replace(id, fragment)</code></td><td>Retire l'actuel et met le nouveau à sa place. <b>Le plus utilisé.</b></td></tr>
+    <tr><td><code>remove(fragment)</code></td><td>Retire un Fragment.</td></tr>
+    <tr><td><code>addToBackStack(nom)</code></td><td>Mémorise la transaction pour que « Retour » l'annule.</td></tr>
+    <tr><td><code>popBackStack()</code></td><td>Annule la dernière transaction mémorisée (= Retour).</td></tr>
+  </table>
+</section>
+
+<!-- ================= CHAPITRE 5 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 5 · Exemple 3</div>
+  <h1>Passer des données à un Fragment</h1>
+  <p><b>Objectif :</b> envoyer le nom du fruit choisi au <code>DetailFragment</code>.</p>
+
+  <div class="box err"><b class="t">À ne JAMAIS faire</b>
+    Passer les données par le constructeur : <code>DetailFragment("Fraise")</code>. Quand Android recrée le Fragment (rotation, retour d'arrière-plan…), il appelle le constructeur <b>vide</b> : votre donnée est perdue et l'application plante.</div>
+
+  <p>La bonne méthode : ranger les données dans les <b>arguments</b> du Fragment, un « sac » (<code>Bundle</code>) qu'Android sauvegarde et restaure automatiquement.</p>
+
+  <div class="split">
+    <div>
+<pre data-file="DetailFragment.kt"><span class="k">class</span> <span class="t">DetailFragment</span> : <span class="t">Fragment</span>() {
+
+    <span class="k">companion object</span> {
+        <span class="k">private const val</span> CLE_NOM = <span class="s">"nom"</span>
+
+        <span class="c">// "Usine" : la seule façon de créer</span>
+        <span class="c">// le Fragment avec ses données</span>
+        <span class="k">fun</span> nouveau(nom: <span class="t">String</span>) = <span class="t">DetailFragment</span>().apply {
+            arguments = bundleOf(CLE_NOM to nom)
+        }
+    }
+
+    <span class="k">override fun</span> onCreateView(
+        inflater: <span class="t">LayoutInflater</span>,
+        container: <span class="t">ViewGroup</span>?,
+        savedInstanceState: <span class="t">Bundle</span>?
+    ) = content {
+        <span class="c">// On relit la donnée dans les arguments</span>
+        <span class="k">val</span> nom = requireArguments().getString(CLE_NOM)!!
+        <span class="k">val</span> fruit = fruits.first { it.nom == nom }
+
+        <span class="t">MaterialTheme</span> {
+            EcranDetail(
+                fruit = fruit,
+                onRetour = { parentFragmentManager.popBackStack() }
+            )
+        }
+    }
+}</pre>
+    </div>
+    <div style="flex:0 0 auto">
+      <figure><img src="../captures/ecran-detail.png" alt=""><figcaption>Capture 5 — Le nom « Fraise »<br>est bien reçu par le Fragment.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+<pre data-file="Ecrans.kt"><span class="a">@OptIn</span>(<span class="t">ExperimentalMaterial3Api</span>::<span class="k">class</span>)
+<span class="a">@Composable</span>
+<span class="k">fun</span> EcranDetail(fruit: <span class="t">Fruit</span>, onRetour: () <span class="k">-></span> <span class="t">Unit</span>) {
+    <span class="t">Scaffold</span>(
+        topBar = {
+            <span class="t">TopAppBar</span>(
+                title = { <span class="t">Text</span>(<span class="s">"Détail"</span>) },
+                navigationIcon = {
+                    <span class="t">IconButton</span>(onClick = onRetour) {
+                        <span class="t">Icon</span>(<span class="t">Icons</span>.AutoMirrored.Filled.ArrowBack, contentDescription = <span class="s">"Retour"</span>)
+                    }
+                }
+            )
+        }
+    ) { padding <span class="k">-></span>
+        <span class="t">Column</span>(
+            <span class="t">Modifier</span>.padding(padding).fillMaxSize(),
+            horizontalAlignment = <span class="t">Alignment</span>.CenterHorizontally,
+            verticalArrangement = <span class="t">Arrangement</span>.Center
+        ) {
+            <span class="t">Text</span>(fruit.emoji, fontSize = <span class="n">96</span>.sp)
+            <span class="t">Text</span>(fruit.nom, style = <span class="t">MaterialTheme</span>.typography.headlineMedium)
+            <span class="t">Text</span>(<span class="s">"Vous avez choisi ce fruit sur l'écran précédent."</span>)
+            <span class="t">Spacer</span>(<span class="t">Modifier</span>.height(<span class="n">16</span>.dp))
+            <span class="t">FilledTonalButton</span>(onClick = onRetour) { <span class="t">Text</span>(<span class="s">"← Retour à la liste"</span>) }
+        }
+    }
+}</pre>
+
+  <h2>Ce qui se passe, étape par étape</h2>
+  <div class="diagram">
+    <div class="node"><b>1. Clic</b>EcranListe appelle<br>onFruitClique(Fraise)</div>
+    <div class="arrow-r">→</div>
+    <div class="node"><b>2. Usine</b>DetailFragment.nouveau<br>("Fraise")</div>
+    <div class="arrow-r">→</div>
+    <div class="node fill"><b>3. Bundle</b>arguments =<br>{ nom: "Fraise" }</div>
+    <div class="arrow-r">→</div>
+    <div class="node"><b>4. Lecture</b>requireArguments()<br>.getString("nom")</div>
+  </div>
+
+  <div class="box tip"><b class="t">Quels types peut-on mettre dans un Bundle ?</b>
+    Les types simples : <code>String</code>, <code>Int</code>, <code>Boolean</code>, <code>Long</code>, <code>Double</code>, leurs listes et tableaux… Pour un objet complet, passez plutôt son <b>identifiant</b> (ex. <code>id = 42</code>) et retrouvez l'objet dans votre base de données ou votre ViewModel. Le Bundle doit rester <b>petit</b>.</div>
+
+  <div class="box info"><b class="t">Et pour renvoyer un résultat à l'écran précédent ?</b>
+    On utilise l'API <i>Fragment Result</i> :
+    <code>setFragmentResult("choix", bundleOf("nom" to "Kiwi"))</code> dans le Fragment qui répond, et
+    <code>setFragmentResultListener("choix") { _, bundle -> ... }</code> dans celui qui attend. Pour un débutant, le ViewModel partagé (chapitre suivant) est souvent plus simple.</div>
+</section>
+
+<!-- ================= CHAPITRE 6 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 6 · Exemple 4</div>
+  <h1>Partager des données avec un ViewModel</h1>
+  <p><b>Objectif :</b> un panier de fruits. On ajoute un fruit depuis l'écran de détail, et le panier se met à jour automatiquement sur un autre Fragment.</p>
+  <p>Un <b>ViewModel</b> est une classe qui garde les données en mémoire, même quand l'écran tourne. Si deux Fragments demandent le ViewModel <b>de l'Activity</b>, ils reçoivent <b>le même objet</b> : c'est une boîte partagée.</p>
+
+  <div class="diagram">
+    <div class="node"><b>DetailFragment</b>ajoute « Kiwi »</div>
+    <div class="arrow-r">→</div>
+    <div class="node fill orange"><b>PanierViewModel</b>(rattaché à l'Activity)<br>panier = [Pomme, Fraise, Kiwi]</div>
+    <div class="arrow-r">→</div>
+    <div class="node"><b>PanierFragment</b>affiche la liste<br>à jour</div>
+  </div>
+
+  <div class="split">
+    <div>
+<pre data-file="PanierViewModel.kt"><span class="k">class</span> <span class="t">PanierViewModel</span> : <span class="t">ViewModel</span>() {
+    <span class="c">// Liste observable par Compose</span>
+    <span class="k">val</span> panier = mutableStateListOf&lt;<span class="t">Fruit</span>&gt;()
+
+    <span class="k">fun</span> ajouter(fruit: <span class="t">Fruit</span>) {
+        <span class="k">if</span> (fruit !<span class="k">in</span> panier) panier.add(fruit)
+    }
+    <span class="k">fun</span> vider() = panier.clear()
+}</pre>
+<pre data-file="PanierFragment.kt"><span class="k">class</span> <span class="t">PanierFragment</span> : <span class="t">Fragment</span>() {
+    <span class="c">// "activityViewModels" = partagé</span>
+    <span class="c">// avec tous les Fragments de l'Activity</span>
+    <span class="k">private val</span> vm: <span class="t">PanierViewModel</span>
+        <span class="k">by</span> activityViewModels()
+
+    <span class="k">override fun</span> onCreateView(
+        inflater: <span class="t">LayoutInflater</span>,
+        container: <span class="t">ViewGroup</span>?,
+        savedInstanceState: <span class="t">Bundle</span>?
+    ) = content {
+        <span class="t">MaterialTheme</span> {
+            EcranPanier(
+                fruits = vm.panier,
+                onVider = vm::vider
+            )
+        }
+    }
+}</pre>
+    </div>
+    <div style="flex:0 0 auto">
+      <figure><img src="../captures/ecran-viewmodel.png" alt=""><figcaption>Capture 6 — Le panier, partagé<br>entre deux Fragments.</figcaption></figure>
+    </div>
+  </div>
+  <p>Dans <code>DetailFragment</code>, il suffit de déclarer le même ViewModel et d'appeler <code>vm.ajouter(fruit)</code> dans un bouton :</p>
+<pre data-file="DetailFragment.kt (extrait)"><span class="k">private val</span> vm: <span class="t">PanierViewModel</span> <span class="k">by</span> activityViewModels()
+<span class="c">// ...</span>
+<span class="t">Button</span>(onClick = { vm.ajouter(fruit) }) { <span class="t">Text</span>(<span class="s">"Ajouter au panier"</span>) }</pre>
+  <table>
+    <tr><th>Déclaration</th><th>Durée de vie / partage</th></tr>
+    <tr><td><code>by viewModels()</code></td><td>Propre à <b>ce</b> Fragment uniquement.</td></tr>
+    <tr><td><code>by activityViewModels()</code></td><td>Partagé par <b>tous</b> les Fragments de l'Activity.</td></tr>
+  </table>
+</section>
+
+<!-- ================= CHAPITRE 7 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 7 · Exemple 5</div>
+  <h1>Afficher un ancien Fragment dans Compose</h1>
+  <p><b>Situation :</b> votre écran est écrit en Compose, mais vous devez y intégrer un Fragment existant (par exemple un vieux <code>MeteoFragment</code> en XML, ou un Fragment fourni par une bibliothèque). C'est le chemin <b>inverse</b> des chapitres précédents.</p>
+  <p>La bibliothèque <code>fragment-compose</code> fournit pour cela le Composable <b><code>AndroidFragment</code></b>.</p>
+
+  <div class="split">
+    <div>
+<pre data-file="MainActivity.kt"><span class="c">// Ici, plus besoin de layout XML :</span>
+<span class="c">// l'Activity affiche directement du Compose.</span>
+<span class="k">class</span> <span class="t">MainActivity</span> : <span class="t">AppCompatActivity</span>() {
+    <span class="k">override fun</span> onCreate(s: <span class="t">Bundle</span>?) {
+        <span class="k">super</span>.onCreate(s)
+        setContent {
+            <span class="t">MaterialTheme</span> { EcranAccueil() }
+        }
+    }
+}
+
+<span class="a">@OptIn</span>(<span class="t">ExperimentalMaterial3Api</span>::<span class="k">class</span>)
+<span class="a">@Composable</span>
+<span class="k">fun</span> EcranAccueil() {
+    <span class="t">Scaffold</span>(topBar = {
+        <span class="t">TopAppBar</span>(title = { <span class="t">Text</span>(<span class="s">"Écran 100 % Compose"</span>) })
+    }) { padding <span class="k">-></span>
+        <span class="t">Column</span>(<span class="t">Modifier</span>.padding(padding).padding(<span class="n">16</span>.dp)) {
+            <span class="t">Text</span>(<span class="s">"Bienvenue !"</span>,
+                style = <span class="t">MaterialTheme</span>.typography.headlineSmall)
+
+            <span class="c">// ⬇ Le Fragment, comme un Composable</span>
+            <span class="t">AndroidFragment</span>&lt;<span class="t">MeteoFragment</span>&gt;(
+                modifier = <span class="t">Modifier</span>
+                    .fillMaxWidth()
+                    .height(<span class="n">180</span>.dp),
+                arguments = bundleOf(<span class="s">"ville"</span> to <span class="s">"Rennes"</span>)
+            )
+
+            <span class="t">Button</span>(onClick = { <span class="c">/* ... */</span> },
+                   modifier = <span class="t">Modifier</span>.fillMaxWidth()) {
+                <span class="t">Text</span>(<span class="s">"Continuer"</span>)
+            }
+        }
+    }
+}</pre>
+    </div>
+    <div style="flex:0 0 auto">
+      <figure><img src="../captures/ecran-androidfragment.png" alt=""><figcaption>Capture 7 — En orange, le Fragment<br>intégré au milieu d'un écran Compose.</figcaption></figure>
+    </div>
+  </div>
+  <div class="box info"><b class="t">Bon à savoir</b>
+    <ul style="margin:4pt 0 0">
+      <li><code>AndroidFragment</code> crée et gère le Fragment <b>pour vous</b> : pas de <code>FragmentManager</code>, pas de <code>commit</code>.</li>
+      <li>Les <code>arguments</code> sont transmis au Fragment exactement comme au chapitre 5 : il les lit avec <code>requireArguments()</code>.</li>
+      <li>Le paramètre <code>onUpdate = { fragment -> ... }</code> permet d'appeler des méthodes du Fragment une fois qu'il est créé.</li>
+      <li>L'Activity doit hériter de <code>FragmentActivity</code> (ou <code>AppCompatActivity</code>, qui en hérite).</li>
+    </ul>
+  </div>
+  <div class="box warn"><b class="t">Ancienne méthode</b>
+    Sur Internet, vous trouverez encore <code>AndroidViewBinding</code> avec un <code>FragmentContainerView</code> dans un XML. Cela fonctionne, mais <code>AndroidFragment</code> est aujourd'hui la solution recommandée, beaucoup plus simple.</div>
+</section>
+
+<!-- ================= CHAPITRE 8 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 8 · Exemple 6</div>
+  <h1>Le 100 % Compose : remplacer les Fragments</h1>
+  <p>Pour une <b>nouvelle application</b>, on n'utilise plus de Fragments du tout. Chaque écran est un simple Composable, et c'est <b>Navigation Compose</b> qui gère la pile d'écrans et le bouton Retour.</p>
+  <table>
+    <tr><th>Avec Fragments</th><th>Avec Navigation Compose</th></tr>
+    <tr><td>Une classe <code>Fragment</code> par écran</td><td>Une fonction <code>@Composable</code> par écran</td></tr>
+    <tr><td><code>FragmentContainerView</code></td><td><code>NavHost</code></td></tr>
+    <tr><td><code>FragmentManager.commit { replace(...) }</code></td><td><code>navController.navigate(...)</code></td></tr>
+    <tr><td><code>addToBackStack()</code></td><td>Automatique</td></tr>
+    <tr><td>Arguments dans un <code>Bundle</code></td><td>Une <code>data class</code> typée</td></tr>
+    <tr><td><code>popBackStack()</code></td><td><code>navController.popBackStack()</code></td></tr>
+  </table>
+
+  <h2>Configuration</h2>
+<pre data-file="app/build.gradle.kts"><span class="k">plugins</span> {
+    <span class="c">// ... plugins existants</span>
+    kotlin(<span class="s">"plugin.serialization"</span>) version <span class="s">"2.0.21"</span>   <span class="c">// même version que votre Kotlin</span>
+}
+dependencies {
+    implementation(<span class="s">"androidx.navigation:navigation-compose:2.8.5"</span>)
+    implementation(<span class="s">"org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"</span>)
+}</pre>
+
+  <h2>Étape 1 — Déclarer les destinations (« routes »)</h2>
+<pre data-file="Routes.kt"><span class="k">import</span> kotlinx.serialization.Serializable
+
+<span class="a">@Serializable</span> <span class="k">object</span> <span class="t">Accueil</span>                         <span class="c">// écran sans paramètre</span>
+<span class="a">@Serializable</span> <span class="k">data class</span> <span class="t">Detail</span>(<span class="k">val</span> nom: <span class="t">String</span>)    <span class="c">// écran avec un paramètre</span></pre>
+  <div class="box tip"><b class="t">Le gros avantage</b>
+    Fini les clés <code>"nom"</code> tapées à la main dans un Bundle : si vous vous trompez de type ou oubliez un paramètre, le <b>compilateur</b> vous prévient avant même de lancer l'application.</div>
+</section>
+
+<section>
+  <h2 style="margin-top:0">Étape 2 — Le NavHost</h2>
+<pre data-file="MainActivity.kt"><span class="k">class</span> <span class="t">MainActivity</span> : <span class="t">ComponentActivity</span>() {      <span class="c">// plus besoin d'AppCompatActivity</span>
+    <span class="k">override fun</span> onCreate(savedInstanceState: <span class="t">Bundle</span>?) {
+        <span class="k">super</span>.onCreate(savedInstanceState)
+        setContent { <span class="t">MaterialTheme</span> { MonApplication() } }
+    }
+}
+
+<span class="a">@Composable</span>
+<span class="k">fun</span> MonApplication() {
+    <span class="k">val</span> navController = rememberNavController()
+
+    <span class="t">NavHost</span>(navController = navController, startDestination = <span class="t">Accueil</span>) {
+
+        composable&lt;<span class="t">Accueil</span>&gt; {
+            <span class="c">// On RÉUTILISE le Composable du chapitre 4 !</span>
+            EcranListe(onFruitClique = { fruit <span class="k">-></span>
+                navController.navigate(<span class="t">Detail</span>(nom = fruit.nom))
+            })
+        }
+
+        composable&lt;<span class="t">Detail</span>&gt; { backStackEntry <span class="k">-></span>
+            <span class="k">val</span> route: <span class="t">Detail</span> = backStackEntry.toRoute()
+            <span class="k">val</span> fruit = fruits.first { it.nom == route.nom }
+            EcranDetail(fruit = fruit, onRetour = { navController.popBackStack() })
+        }
+    }
+}</pre>
+
+  <div class="duo">
+    <figure style="margin:0"><img src="../captures/ecran-nav-accueil.png" alt="" style="height:300px"><figcaption>Capture 8 — Destination <code>Accueil</code></figcaption></figure>
+    <div class="arrow">→<small>navigate(<br>Detail("Raisin"))</small></div>
+    <figure style="margin:0"><img src="../captures/ecran-nav-detail.png" alt="" style="height:300px"><figcaption>Capture 9 — Destination <code>Detail</code></figcaption></figure>
+  </div>
+
+  <div class="box info"><b class="t">Vous voyez la différence ?</b>
+    Les deux Composables <code>EcranListe</code> et <code>EcranDetail</code> n'ont <b>pas changé d'une ligne</b>. Nous avons seulement supprimé les classes <code>ListeFragment</code>, <code>DetailFragment</code>, le fichier XML et le FragmentManager. C'est pour cela qu'on conseille d'écrire des Composables qui reçoivent des <b>fonctions</b> (<code>onFruitClique</code>, <code>onRetour</code>) plutôt que de manipuler la navigation eux-mêmes : la migration devient un jeu d'enfant.</div>
+
+  <h2>Migrer une application existante, pas à pas</h2>
+  <ol>
+    <li>Dans chaque Fragment, remplacer le layout XML par <code>content { }</code> + un Composable (chapitre 3).</li>
+    <li>Sortir la logique de navigation des Composables : ils reçoivent des lambdas.</li>
+    <li>Quand <b>tous</b> les écrans sont des Composables, créer un <code>NavHost</code> et une destination par écran.</li>
+    <li>Supprimer les classes Fragment, devenues inutiles. Garder <code>AndroidFragment</code> seulement pour les Fragments de bibliothèques.</li>
+  </ol>
+</section>
+
+<!-- ================= CHAPITRE 9 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 9</div>
+  <h1>Le cycle de vie, sans se perdre</h1>
+  <p>Un Fragment passe par plusieurs étapes, un peu comme une pièce que l'on construit, utilise, puis démonte. Voici les principales :</p>
+  <div class="life">
+    <div>onCreate</div><span>→</span><div class="hl">onCreateView</div><span>→</span><div>onViewCreated</div><span>→</span><div>onStart</div><span>→</span><div>onResume</div><span>→</span><div>onPause</div><span>→</span><div>onStop</div><span>→</span><div class="hl">onDestroyView</div><span>→</span><div>onDestroy</div>
+  </div>
+  <table>
+    <tr><th>Méthode</th><th>Quand ?</th><th>Que faire dedans ?</th></tr>
+    <tr><td><code>onCreate</code></td><td>Le Fragment est créé</td><td>Lire les arguments, préparer des données (pas d'interface).</td></tr>
+    <tr><td><code>onCreateView</code></td><td>Il faut dessiner l'écran</td><td><b>Renvoyer la ComposeView</b> (c'est ce que nous faisons depuis le début).</td></tr>
+    <tr><td><code>onResume</code></td><td>L'écran est visible et actif</td><td>Rarement utile avec Compose.</td></tr>
+    <tr><td><code>onDestroyView</code></td><td>L'écran est retiré (ex. on passe au Fragment suivant)</td><td>Compose est libéré automatiquement grâce à la stratégie ci-dessous.</td></tr>
+  </table>
+
+  <div class="box warn"><b class="t">Piège important : la vue meurt avant le Fragment</b>
+    Quand on navigue de la liste vers le détail avec <code>addToBackStack</code>, le <code>ListeFragment</code> <b>n'est pas détruit</b> (il attend dans la pile) mais sa <b>vue</b> l'est. C'est pourquoi on utilise la stratégie
+    <code>DisposeOnViewTreeLifecycleDestroyed</code> : Compose est nettoyé en même temps que la vue, ni trop tôt, ni trop tard. La fonction <code>content { }</code> l'applique automatiquement.</div>
+
+  <h2>Les stratégies de ViewCompositionStrategy</h2>
+  <table>
+    <tr><th>Stratégie</th><th>Quand l'utiliser</th></tr>
+    <tr><td><code>DisposeOnViewTreeLifecycleDestroyed</code></td><td><b>Dans un Fragment.</b> Le bon choix 9 fois sur 10.</td></tr>
+    <tr><td><code>DisposeOnDetachedFromWindowOrReleasedFromPool</code></td><td>Valeur par défaut. Adaptée à une ComposeView dans une Activity ou une liste RecyclerView.</td></tr>
+    <tr><td><code>DisposeOnLifecycleDestroyed(lifecycle)</code></td><td>Cas avancés, lorsqu'on veut choisir précisément le cycle de vie.</td></tr>
+  </table>
+
+  <h2>Et l'état de l'écran ?</h2>
+  <ul>
+    <li><code>remember { }</code> garde une valeur tant que le Composable est affiché, mais <b>la perd</b> si l'on tourne l'écran ou si la vue du Fragment est détruite.</li>
+    <li><code>rememberSaveable { }</code> survit à la rotation et au retour depuis la pile.</li>
+    <li>Un <b>ViewModel</b> garde des données plus importantes (listes, résultats réseau…) et survit à la rotation.</li>
+  </ul>
+<pre><span class="c">// Le compteur du chapitre 3 survit maintenant à la rotation :</span>
+<span class="k">var</span> clics <span class="k">by</span> rememberSaveable { mutableIntStateOf(<span class="n">0</span>) }</pre>
+</section>
+
+<!-- ================= CHAPITRE 10 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 10</div>
+  <h1>Les erreurs fréquentes du débutant</h1>
+
+  <div class="box err"><b class="t">1. « IllegalArgumentException: No view found for id … »</b>
+    Le FragmentManager ne trouve pas le conteneur. <br><b>Solution :</b> vérifiez que <code>setContentView(R.layout.activity_main)</code> est appelé <b>avant</b> <code>commit</code>, et que l'id (<code>R.id.conteneur</code>) est le bon.</div>
+
+  <div class="box err"><b class="t">2. Deux Fragments superposés après une rotation</b>
+    <b>Solution :</b> entourez l'ajout initial par <code>if (savedInstanceState == null) { … }</code> (chapitre 3).</div>
+
+  <div class="box err"><b class="t">3. « Fragment … could not be instantiated / no empty constructor »</b>
+    Vous avez ajouté des paramètres au constructeur du Fragment. <br><b>Solution :</b> constructeur vide + <code>arguments</code> + fonction usine <code>nouveau(...)</code> (chapitre 5).</div>
+
+  <div class="box err"><b class="t">4. Le bouton Retour ferme l'application</b>
+    <b>Solution :</b> ajoutez <code>addToBackStack(null)</code> dans la transaction (chapitre 4).</div>
+
+  <div class="box err"><b class="t">5. « You need to use a Theme.AppCompat theme »</b>
+    Votre Activity hérite de <code>AppCompatActivity</code> mais son thème n'est pas AppCompat. <br><b>Solution :</b> utilisez <code>@style/Theme.AppCompat.Light.NoActionBar</code> dans le manifeste (chapitre 2).</div>
+
+  <div class="box err"><b class="t">6. « Unresolved reference: commit / content / AndroidFragment »</b>
+    Il manque une dépendance ou un import. <br><b>Solution :</b> vérifiez <code>fragment-ktx</code> et <code>fragment-compose</code> dans Gradle, puis importez <code>androidx.fragment.app.commit</code> et <code>androidx.fragment.compose.content</code> / <code>AndroidFragment</code>. Dans Android Studio, <b>Alt + Entrée</b> sur le mot en rouge ajoute l'import.</div>
+
+  <div class="box err"><b class="t">7. Les données disparaissent quand je reviens en arrière</b>
+    Vous utilisez <code>remember</code> : l'état est perdu quand la vue du Fragment est détruite. <br><b>Solution :</b> <code>rememberSaveable</code> ou un ViewModel (chapitre 9).</div>
+
+  <div class="box err"><b class="t">8. Le Composable navigue lui-même vers un Fragment</b>
+    Appeler <code>parentFragmentManager</code> depuis un Composable rend le code difficile à réutiliser. <br><b>Solution :</b> le Composable reçoit un <code>onClic: () -> Unit</code>, et c'est le Fragment qui décide quoi faire (chapitres 4 et 8).</div>
+</section>
+
+<!-- ================= CHAPITRE 11 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 11</div>
+  <h1>Exercices corrigés</h1>
+
+  <div class="ex"><div class="lvl">Exercice 1 · Facile</div>
+    <p>Créez un Fragment <code>BonjourFragment</code> qui affiche, en Compose, le texte « Bonjour, &lt;prénom&gt; ! ». Le prénom doit être passé en argument.</p>
+    <b>Correction</b>
+<pre><span class="k">class</span> <span class="t">BonjourFragment</span> : <span class="t">Fragment</span>() {
+    <span class="k">companion object</span> {
+        <span class="k">fun</span> nouveau(prenom: <span class="t">String</span>) = <span class="t">BonjourFragment</span>().apply {
+            arguments = bundleOf(<span class="s">"prenom"</span> to prenom)
+        }
+    }
+    <span class="k">override fun</span> onCreateView(i: <span class="t">LayoutInflater</span>, c: <span class="t">ViewGroup</span>?, s: <span class="t">Bundle</span>?) = content {
+        <span class="k">val</span> prenom = requireArguments().getString(<span class="s">"prenom"</span>)
+        <span class="t">MaterialTheme</span> { <span class="t">Text</span>(<span class="s">"Bonjour, $prenom !"</span>, style = <span class="t">MaterialTheme</span>.typography.headlineLarge) }
+    }
+}
+<span class="c">// Dans MainActivity :</span>
+supportFragmentManager.commit { replace(R.id.<span class="a">conteneur</span>, <span class="t">BonjourFragment</span>.nouveau(<span class="s">"Léa"</span>)) }</pre>
+  </div>
+
+  <div class="ex"><div class="lvl">Exercice 2 · Moyen</div>
+    <p>Dans l'application des fruits, ajoutez sur l'écran de détail un bouton « Voir un autre fruit au hasard » qui ouvre un nouveau <code>DetailFragment</code> avec un fruit aléatoire. Que se passe-t-il quand on appuie plusieurs fois sur Retour ?</p>
+    <b>Correction</b>
+<pre><span class="c">// Dans DetailFragment, on passe une nouvelle lambda à EcranDetail :</span>
+onHasard = {
+    <span class="k">val</span> autre = fruits.random()
+    parentFragmentManager.commit {
+        setReorderingAllowed(<span class="k">true</span>)
+        replace(R.id.<span class="a">conteneur</span>, <span class="t">DetailFragment</span>.nouveau(autre.nom))
+        addToBackStack(<span class="k">null</span>)
+    }
+}</pre>
+    <p><i>Réponse :</i> chaque clic empile un nouveau détail. Le bouton Retour revient donc sur <b>chaque</b> fruit vu précédemment, dans l'ordre inverse, avant de revenir à la liste.</p>
+  </div>
+
+  <div class="ex"><div class="lvl">Exercice 3 · Défi</div>
+    <p>Convertissez l'exercice 2 en <b>Navigation Compose</b> (chapitre 8), sans aucun Fragment.</p>
+    <b>Correction</b>
+<pre>composable&lt;<span class="t">Detail</span>&gt; { entry <span class="k">-></span>
+    <span class="k">val</span> fruit = fruits.first { it.nom == entry.toRoute&lt;<span class="t">Detail</span>&gt;().nom }
+    EcranDetail(
+        fruit = fruit,
+        onRetour = { navController.popBackStack() },
+        onHasard = { navController.navigate(<span class="t">Detail</span>(fruits.random().nom)) }
+    )
+}</pre>
+    <p>Le comportement de la pile est identique : Navigation Compose empile les destinations comme le faisait <code>addToBackStack</code>.</p>
+  </div>
+</section>
+
+<!-- ================= CHAPITRE 12 ================= -->
+<section class="chapter">
+  <div class="chapnum">Chapitre 12</div>
+  <h1>Aide-mémoire</h1>
+  <h3>Compose dans un Fragment</h3>
+<pre><span class="k">override fun</span> onCreateView(i: <span class="t">LayoutInflater</span>, c: <span class="t">ViewGroup</span>?, s: <span class="t">Bundle</span>?) = content {
+    <span class="t">MaterialTheme</span> { MonEcran() }
+}</pre>
+  <h3>Afficher / remplacer un Fragment</h3>
+<pre>parentFragmentManager.commit {
+    setReorderingAllowed(<span class="k">true</span>)
+    replace(R.id.<span class="a">conteneur</span>, <span class="t">AutreFragment</span>.nouveau(<span class="s">"valeur"</span>))
+    addToBackStack(<span class="k">null</span>)
+}</pre>
+  <h3>Arguments</h3>
+<pre><span class="t">MonFragment</span>().apply { arguments = bundleOf(<span class="s">"cle"</span> to <span class="s">"valeur"</span>) }   <span class="c">// envoyer</span>
+requireArguments().getString(<span class="s">"cle"</span>)                                <span class="c">// lire</span></pre>
+  <h3>ViewModel partagé</h3>
+<pre><span class="k">private val</span> vm: <span class="t">MonViewModel</span> <span class="k">by</span> activityViewModels()</pre>
+  <h3>Fragment dans Compose</h3>
+<pre><span class="t">AndroidFragment</span>&lt;<span class="t">MonFragment</span>&gt;(modifier = <span class="t">Modifier</span>.fillMaxSize(), arguments = bundleOf(<span class="s">"cle"</span> to <span class="n">1</span>))</pre>
+  <h3>100 % Compose</h3>
+<pre><span class="t">NavHost</span>(navController, startDestination = <span class="t">Accueil</span>) {
+    composable&lt;<span class="t">Accueil</span>&gt; { EcranAccueil(onClic = { navController.navigate(<span class="t">Detail</span>(<span class="s">"x"</span>)) }) }
+    composable&lt;<span class="t">Detail</span>&gt;  { EcranDetail(it.toRoute&lt;<span class="t">Detail</span>&gt;().nom) }
+}</pre>
+
+  <h2>Check-list avant de lancer l'application</h2>
+  <ul class="check">
+    <li>Les dépendances <code>fragment-ktx</code> et <code>fragment-compose</code> sont ajoutées et synchronisées.</li>
+    <li>L'Activity hérite de <code>AppCompatActivity</code> (ou <code>FragmentActivity</code>) et a un thème AppCompat.</li>
+    <li>Le Fragment est ajouté seulement si <code>savedInstanceState == null</code>.</li>
+    <li>Les Fragments ont un constructeur vide ; les données passent par les <code>arguments</code>.</li>
+    <li>Chaque navigation qui doit être annulable a son <code>addToBackStack</code>.</li>
+    <li>Les Composables reçoivent des lambdas et ne connaissent pas les Fragments.</li>
+  </ul>
+
+  <div class="box tip" style="margin-top:16pt"><b class="t">Pour aller plus loin</b>
+    Documentation officielle Android (developer.android.com) : pages « Fragments », « Interopérabilité Compose et Views », « Navigation avec Compose » et le codelab « Migrer vers Jetpack Compose ».</div>
+  <p style="text-align:center;margin-top:24pt;font-size:13pt;color:var(--p);font-weight:700">Bravo, vous savez maintenant faire cohabiter Fragments et Compose — et vous en passer ! 🎉</p>
+</section>
+
+</body>
+</html>

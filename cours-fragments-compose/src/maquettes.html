@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Maquettes écrans</title>
+<style>
+  :root{
+    --primary:#4F55B5; --on-primary:#fff; --primary-container:#E0E0FF; --on-primary-container:#0B0F5E;
+    --surface:#FBF8FF; --surface-c:#EFECF7; --on-surface:#1B1B21; --on-surface-v:#46464F; --outline:#C6C5D0;
+    --secondary-c:#E2E0F9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,sans-serif;background:#fff;padding:30px;display:flex;flex-wrap:wrap;gap:40px}
+  .phone{width:380px;height:780px;border-radius:44px;background:#1d1d22;padding:12px;box-shadow:0 0 0 2px #3a3a42 inset}
+  .screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;position:relative}
+  .status{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:13px;font-weight:600;color:var(--on-surface)}
+  .status .cam{width:12px;height:12px;border-radius:50%;background:#111;position:absolute;left:50%;top:11px;transform:translateX(-50%)}
+  .icons{display:flex;gap:6px;align-items:center}
+  .bar{display:inline-block;width:16px;height:10px;border:1.5px solid var(--on-surface);border-radius:2px;position:relative}
+  .bar::after{content:"";position:absolute;inset:1px;right:4px;background:var(--on-surface)}
+  .appbar{height:64px;display:flex;align-items:center;gap:14px;padding:0 16px;font-size:22px;color:var(--on-surface)}
+  .appbar.colored{background:var(--primary-container);color:var(--on-primary-container)}
+  .back{font-size:24px;width:32px;text-align:center}
+  .content{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .t-large{font-size:28px;font-weight:600;color:var(--on-surface)}
+  .t-body{font-size:16px;line-height:1.5;color:var(--on-surface-v)}
+  .btn{background:var(--primary);color:var(--on-primary);border-radius:24px;height:44px;padding:0 26px;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:15px}
+  .btn.tonal{background:var(--secondary-c);color:var(--on-primary-container)}
+  .card{background:var(--surface-c);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+  .emoji{font-family:"Noto Color Emoji";font-size:30px;width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+  .card .name{font-weight:600;font-size:17px;color:var(--on-surface)}
+  .card .sub{font-size:13px;color:var(--on-surface-v)}
+  .card .chev{margin-left:auto;font-size:22px;color:var(--on-surface-v)}
+  .big-emoji{font-family:"Noto Color Emoji";font-size:110px;line-height:1}
+  .chip{border:1px solid var(--outline);border-radius:8px;padding:8px 12px;font-family:"JetBrains Mono";font-size:12.5px;color:var(--on-surface-v);background:#fff}
+  .nav{height:20px;display:flex;justify-content:center;align-items:center}
+  .nav i{width:110px;height:4px;border-radius:2px;background:var(--on-surface);opacity:.6}
+  .counter{font-size:64px;font-weight:700;color:var(--primary)}
+  .legacy{border:2.5px dashed #E8710A;border-radius:12px;position:relative;padding:28px 14px 16px;background:#FFF6EC}
+  .legacy .tag{position:absolute;top:-12px;left:12px;background:#E8710A;color:#fff;font-size:12px;font-family:"JetBrains Mono";padding:3px 8px;border-radius:6px}
+  .old-title{font-family:Roboto,"DejaVu Sans",sans-serif;font-size:18px;color:#222;margin-bottom:6px}
+  .old-text{font-family:"DejaVu Sans",sans-serif;font-size:14px;color:#444;margin-bottom:12px}
+  .old-btn{background:#D6D7D7;border-radius:2px;padding:10px;text-align:center;font-family:"DejaVu Sans";font-size:13px;letter-spacing:.5px;color:#222;box-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .compose-zone{border:2.5px dashed var(--primary);border-radius:12px;position:relative;padding:22px 14px 14px}
+  .compose-zone .tag{position:absolute;top:-12px;left:12px;background:var(--primary);color:#fff;font-size:12px;font-family:"JetBrains Mono";padding:3px 8px;border-radius:6px}
+  .fab{position:absolute;right:20px;bottom:40px;width:56px;height:56px;border-radius:16px;background:var(--primary-container);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--on-primary-container);box-shadow:0 3px 6px rgba(0,0,0,.2)}
+  .badge{font-size:12px;font-weight:600;background:var(--primary);color:#fff;border-radius:10px;padding:2px 8px;margin-left:auto}
+
+  /* Android Studio panel */
+  .studio{width:520px;background:#2B2D30;border-radius:10px;overflow:hidden;font-family:"JetBrains Mono";font-size:13.5px;color:#DFE1E5;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .studio .top{background:#1E1F22;padding:10px 14px;display:flex;gap:8px;align-items:center;font-family:Inter;font-size:13px;color:#9DA0A8}
+  .studio .dot{width:12px;height:12px;border-radius:50%}
+  .studio .tree{padding:12px 10px 16px}
+  .studio .row{padding:3px 6px;white-space:pre;border-radius:4px}
+  .studio .row.sel{background:#2E436E}
+  .folder{color:#E8BF6A}.kt{color:#6FAFBD}.xml{color:#E07A5F}.gr{color:#9876AA}.note{color:#6F737A;font-style:italic}
+</style>
+</head>
+<body>
+
+<!-- 1. Premier fragment avec Compose -->
+<div class="phone" id="ecran-premier-fragment"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mon premier Fragment</div>
+  <div class="content center" style="gap:22px">
+    <div class="t-large">Bonjour ! 👋</div>
+    <div class="t-body">Ce texte est dessiné par<br><b>Jetpack Compose</b>,<br>à l'intérieur d'un <b>Fragment</b>.</div>
+    <div class="t-body" style="margin-top:20px">Nombre de clics</div>
+    <div class="counter">3</div>
+    <div class="btn">Cliquer ici</div>
+  </div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 2. Liste de fruits -->
+<div class="phone" id="ecran-liste"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mes fruits</div>
+  <div class="content" style="gap:10px">
+    <div class="card"><div class="emoji">🍎</div><div><div class="name">Pomme</div><div class="sub">Croquante et sucrée</div></div><div class="chev">›</div></div>
+    <div class="card"><div class="emoji">🍌</div><div><div class="name">Banane</div><div class="sub">Pleine d'énergie</div></div><div class="chev">›</div></div>
+    <div class="card"><div class="emoji">🍇</div><div><div class="name">Raisin</div><div class="sub">À picorer</div></div><div class="chev">›</div></div>
+    <div class="card" style="outline:3px solid var(--primary)"><div class="emoji">🍓</div><div><div class="name">Fraise</div><div class="sub">Le fruit de l'été</div></div><div class="chev">›</div></div>
+    <div class="card"><div class="emoji">🍊</div><div><div class="name">Orange</div><div class="sub">Pleine de vitamine C</div></div><div class="chev">›</div></div>
+    <div class="card"><div class="emoji">🥝</div><div><div class="name">Kiwi</div><div class="sub">Petit mais costaud</div></div><div class="chev">›</div></div>
+  </div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 3. Détail -->
+<div class="phone" id="ecran-detail"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored"><span class="back">←</span>Détail</div>
+  <div class="content center" style="gap:18px">
+    <div class="big-emoji">🍓</div>
+    <div class="t-large">Fraise</div>
+    <div class="t-body">Vous avez choisi ce fruit<br>sur l'écran précédent.</div>
+    <div class="chip">arguments.getString("nom") = "Fraise"</div>
+    <div class="btn tonal" style="margin-top:14px">← Retour à la liste</div>
+  </div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 4. AndroidFragment dans Compose -->
+<div class="phone" id="ecran-androidfragment"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Écran 100 % Compose</div>
+  <div class="content" style="gap:22px">
+    <div class="compose-zone"><span class="tag">Composable</span>
+      <div class="t-large" style="font-size:22px">Bienvenue !</div>
+      <div class="t-body" style="font-size:14px">Cette partie est écrite en Compose.</div>
+    </div>
+    <div class="legacy"><span class="tag">AndroidFragment&lt;MeteoFragment&gt;</span>
+      <div class="old-title">Météo du jour</div>
+      <div class="old-text">☀ 24 °C — Rennes<br>(ancien Fragment avec layout XML)</div>
+      <div class="old-btn">ACTUALISER</div>
+    </div>
+    <div class="compose-zone"><span class="tag">Composable</span>
+      <div class="btn" style="width:100%">Continuer</div>
+    </div>
+  </div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 5. Navigation Compose : accueil -->
+<div class="phone" id="ecran-nav-accueil"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar">Accueil <span class="badge">NavHost</span></div>
+  <div class="content" style="gap:12px">
+    <div class="t-body">Choisissez un fruit :</div>
+    <div class="card"><div class="emoji">🍎</div><div class="name">Pomme</div><div class="chev">›</div></div>
+    <div class="card"><div class="emoji">🍌</div><div class="name">Banane</div><div class="chev">›</div></div>
+    <div class="card" style="outline:3px solid var(--primary)"><div class="emoji">🍇</div><div class="name">Raisin</div><div class="chev">›</div></div>
+    <div class="t-body" style="font-size:13px;margin-top:10px">Pas de Fragment ici : chaque écran<br>est une simple fonction <b>@Composable</b>.</div>
+  </div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 6. Navigation Compose : détail -->
+<div class="phone" id="ecran-nav-detail"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar"><span class="back">←</span>Détail <span class="badge">composable&lt;Detail&gt;</span></div>
+  <div class="content center" style="gap:18px">
+    <div class="big-emoji">🍇</div>
+    <div class="t-large">Raisin</div>
+    <div class="chip">backStackEntry.toRoute&lt;Detail&gt;().nom</div>
+    <div class="btn tonal" style="margin-top:14px">← Retour</div>
+  </div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 7. Panier : ViewModel partagé -->
+<div class="phone" id="ecran-viewmodel"><div class="screen">
+  <div class="status"><span>9:41</span><span class="cam"></span><span class="icons">▲ ◢ <span class="bar"></span></span></div>
+  <div class="appbar colored">Mon panier <span class="badge">3</span></div>
+  <div class="content" style="gap:10px">
+    <div class="t-body">Fruits ajoutés (partagés entre<br>les deux Fragments grâce au ViewModel) :</div>
+    <div class="card"><div class="emoji">🍎</div><div class="name">Pomme</div><div class="chev">✓</div></div>
+    <div class="card"><div class="emoji">🍓</div><div class="name">Fraise</div><div class="chev">✓</div></div>
+    <div class="card"><div class="emoji">🥝</div><div class="name">Kiwi</div><div class="chev">✓</div></div>
+    <div class="btn tonal" style="margin-top:12px;align-self:center">Vider le panier</div>
+  </div>
+  <div class="fab">+</div>
+  <div class="nav"><i></i></div>
+</div></div>
+
+<!-- 8. Structure du projet (Android Studio) -->
+<div class="studio" id="studio-arbo">
+  <div class="top"><span class="dot" style="background:#FF5F57"></span><span class="dot" style="background:#FEBC2E"></span><span class="dot" style="background:#28C840"></span>&nbsp; Project — MesFruits</div>
+  <div class="tree">
+    <div class="row"><span class="folder">▾ 📁 app</span></div>
+    <div class="row">    <span class="folder">▾ 📁 src/main</span></div>
+    <div class="row">        <span class="xml">AndroidManifest.xml</span></div>
+    <div class="row">        <span class="folder">▾ 📁 java/com/exemple/mesfruits</span></div>
+    <div class="row">            <span class="kt">MainActivity.kt</span>       <span class="note">← l'hôte</span></div>
+    <div class="row sel">            <span class="kt">ListeFragment.kt</span>      <span class="note">← écran 1</span></div>
+    <div class="row">            <span class="kt">DetailFragment.kt</span>     <span class="note">← écran 2</span></div>
+    <div class="row">            <span class="kt">Ecrans.kt</span>             <span class="note">← les @Composable</span></div>
+    <div class="row">        <span class="folder">▾ 📁 res/layout</span></div>
+    <div class="row">            <span class="xml">activity_main.xml</span>     <span class="note">← le conteneur</span></div>
+    <div class="row">    <span class="gr">build.gradle.kts</span>         <span class="note">← dépendances</span></div>
+  </div>
+</div>
+
+</body>
+</html>
