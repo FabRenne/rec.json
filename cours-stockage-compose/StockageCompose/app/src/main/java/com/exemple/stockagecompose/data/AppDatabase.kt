@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 /**
  * La base de données : elle liste les entités et donne accès aux DAO.
  */
-@Database(entities = [Note::class], version = 1)
+@Database(entities = [Note::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao

@@ -34,6 +34,13 @@ android {
     }
 }
 
+// Évite l'erreur "Duplicate class org.intellij.lang.annotations..." :
+// l'ancien artefact com.intellij:annotations contient les mêmes classes
+// que org.jetbrains:annotations. On n'en garde qu'un seul.
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
 dependencies {
     // Jetpack Compose
     val composeBom = platform("androidx.compose:compose-bom:2024.09.00")
