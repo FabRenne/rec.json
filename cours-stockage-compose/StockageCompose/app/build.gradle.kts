@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.exemple.stockagecompose"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.exemple.stockagecompose"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -53,7 +53,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // 4) Room (base de données SQLite)
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
+    ksp("androidx.room:room-compiler:2.7.2")
 }

@@ -13,4 +13,4 @@ Les 4 solutions présentées :
 
 ## Lancer le projet
 Android Studio › File › Open › choisir le dossier `StockageCompose`,
-attendre la synchronisation Gradle, puis cliquer sur ▶ (minSdk 24, compileSdk 34).
+attendre la synchronisation Gradle, puis cliquer sur ▶ (minSdk 24, compileSdk 35).
