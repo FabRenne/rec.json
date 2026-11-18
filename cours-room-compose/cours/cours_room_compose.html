@@ -1,0 +1,1297 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cours Room avec Jetpack Compose</title>
+<style>
+@page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+:root{
+  --primary:#3b2c85; --primary2:#6750a4; --accent:#00897b; --warn:#e65100; --bad:#c62828;
+  --ink:#1d1b20; --muted:#5f5b66; --soft:#f4f1fa; --line:#ddd6ee;
+}
+*{box-sizing:border-box}
+body{font-family:"DejaVu Sans","Liberation Sans",Arial,sans-serif;color:var(--ink);font-size:10.5pt;line-height:1.5;margin:0;background:#fff}
+h1{font-size:22pt;color:var(--primary);margin:0 0 6px;border-bottom:3px solid var(--primary2);padding-bottom:6px;page-break-before:always}
+h1 .num{display:inline-block;background:var(--primary2);color:#fff;border-radius:8px;padding:0 10px;margin-right:10px;font-size:18pt}
+h2{font-size:14pt;color:var(--primary2);margin:18px 0 6px}
+h3{font-size:11.5pt;color:var(--primary);margin:12px 0 4px}
+h2,h3{break-after:avoid;page-break-after:avoid}
+p{margin:6px 0}
+code{font-family:"DejaVu Sans Mono","Liberation Mono",monospace;font-size:9pt;background:var(--soft);padding:1px 4px;border-radius:3px;color:#4a148c}
+pre{font-family:"DejaVu Sans Mono","Liberation Mono",monospace;font-size:8.4pt;line-height:1.42;background:#1e1d2b;color:#e8e6f0;padding:10px 12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;page-break-inside:avoid;margin:8px 0;border-left:4px solid var(--primary2)}
+pre .file{display:block;color:#a99be0;font-style:italic;margin-bottom:4px;border-bottom:1px dashed #44406a;padding-bottom:3px}
+pre code{background:none;color:inherit;padding:0;font-size:inherit}
+.k{color:#ff79c6}.a{color:#ffb86c}.s{color:#a5e88f}.c{color:#8b87a8;font-style:italic}.n{color:#bd93f9}.t{color:#8be9fd}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:9.5pt;page-break-inside:avoid}
+th{background:var(--primary2);color:#fff;text-align:left;padding:5px 8px}
+td{border-bottom:1px solid var(--line);padding:5px 8px;vertical-align:top}
+tr:nth-child(even) td{background:#faf8fe}
+.box{border-radius:8px;padding:8px 12px;margin:10px 0;page-break-inside:avoid;border-left:5px solid}
+.info{background:#e8f4fd;border-color:#1976d2}
+.tip{background:#e6f5f2;border-color:var(--accent)}
+.warn{background:#fff3e0;border-color:var(--warn)}
+.bad{background:#fdecea;border-color:var(--bad)}
+.box b.t1{display:block;margin-bottom:2px}
+figure{margin:12px 0;text-align:center;page-break-inside:avoid}
+figcaption{font-size:9pt;color:var(--muted);font-style:italic;margin-top:4px}
+svg text{font-family:"DejaVu Sans",Arial,sans-serif}
+.cover{height:257mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(160deg,#3b2c85 0%,#6750a4 55%,#00897b 100%);color:#fff;border-radius:14px;padding:30px}
+.cover h1{border:none;color:#fff;font-size:34pt;page-break-before:avoid;margin:10px 0}
+.cover .sub{font-size:14pt;opacity:.9}
+.cover .tag{margin-top:24px;font-size:10pt;opacity:.85}
+.toc{columns:2;column-gap:24px;font-size:10.5pt}
+.toc div{padding:3px 0;border-bottom:1px dotted var(--line);break-inside:avoid}
+.toc b{color:var(--primary2);display:inline-block;width:26px}
+.grid2{display:flex;gap:12px}.grid2>div{flex:1}
+.ex{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:8px 0;page-break-inside:avoid}
+.ex b{color:var(--primary)}
+ul,ol{margin:4px 0 6px 0;padding-left:22px}
+li{margin:2px 0}
+.small{font-size:9pt;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- ===================== COUVERTURE ===================== -->
+<div class="cover">
+  <svg width="170" height="170" viewBox="0 0 170 170">
+    <ellipse cx="85" cy="40" rx="55" ry="18" fill="#fff" opacity=".95"/>
+    <path d="M30 40v80c0 10 25 18 55 18s55-8 55-18V40" fill="#fff" opacity=".18" stroke="#fff" stroke-width="3"/>
+    <path d="M30 80c0 10 25 18 55 18s55-8 55-18" fill="none" stroke="#fff" stroke-width="3"/>
+    <path d="M30 120c0 10 25 18 55 18s55-8 55-18" fill="none" stroke="#fff" stroke-width="3"/>
+    <rect x="62" y="60" width="46" height="70" rx="8" fill="#00897b" stroke="#fff" stroke-width="3"/>
+    <rect x="68" y="68" width="34" height="48" rx="2" fill="#e0f2f1"/>
+    <rect x="72" y="74" width="26" height="5" rx="2" fill="#6750a4"/>
+    <rect x="72" y="84" width="20" height="5" rx="2" fill="#6750a4" opacity=".6"/>
+    <rect x="72" y="94" width="24" height="5" rx="2" fill="#6750a4" opacity=".4"/>
+  </svg>
+  <div class="sub">Android · Kotlin · Persistance locale</div>
+  <h1>Room &amp; Jetpack Compose</h1>
+  <div class="sub">Cours complet sur la base de données Room<br>avec exemples, illustrations et projet fil rouge</div>
+  <div class="tag">Application exemple : « Mes tâches » — Entités · DAO · Flow · MVVM · Relations · Migrations · Tests</div>
+</div>
+
+<!-- ===================== SOMMAIRE ===================== -->
+<h1>Sommaire</h1>
+<div class="toc">
+  <div><b>1</b> Introduction à Room</div>
+  <div><b>2</b> Installation &amp; configuration Gradle</div>
+  <div><b>3</b> Les trois briques de Room</div>
+  <div><b>4</b> Les entités (@Entity)</div>
+  <div><b>5</b> Les DAO (@Dao)</div>
+  <div><b>6</b> La classe RoomDatabase</div>
+  <div><b>7</b> Les TypeConverters</div>
+  <div><b>8</b> Relations entre tables</div>
+  <div><b>9</b> Architecture MVVM : Repository &amp; ViewModel</div>
+  <div><b>10</b> Afficher les données avec Compose</div>
+  <div><b>11</b> Le cycle réactif complet</div>
+  <div><b>12</b> Les migrations</div>
+  <div><b>13</b> Tester Room</div>
+  <div><b>14</b> Bonnes pratiques &amp; erreurs fréquentes</div>
+  <div><b>15</b> Aide-mémoire</div>
+  <div><b>16</b> Exercices</div>
+</div>
+
+<div class="box info" style="margin-top:20px"><b class="t1">Comment utiliser ce cours</b>
+Chaque chapitre explique une notion, puis montre le code correspondant du <b>projet fil rouge</b> fourni dans le dossier <code>projet-exemple/</code> de l'archive. Les chemins de fichiers sont indiqués en haut de chaque bloc de code. Prérequis : bases de Kotlin (data class, lambdas, coroutines) et de Jetpack Compose (@Composable, état).</div>
+
+<h2>Le projet fil rouge : « Mes tâches »</h2>
+<p>Une application de gestion de tâches (to-do list) qui permet de :</p>
+<ul>
+  <li>ajouter, cocher, supprimer des tâches ;</li>
+  <li>classer les tâches par catégorie (relation 1-N) ;</li>
+  <li>rechercher une tâche par son titre en temps réel ;</li>
+  <li>afficher le nombre de tâches restantes, mis à jour automatiquement.</li>
+</ul>
+<figure>
+<svg width="560" height="300" viewBox="0 0 560 300">
+  <!-- téléphone -->
+  <rect x="20" y="5" width="170" height="290" rx="22" fill="#1d1b20"/>
+  <rect x="28" y="20" width="154" height="262" rx="10" fill="#fef7ff"/>
+  <rect x="28" y="20" width="154" height="34" rx="10" fill="#e8def8"/>
+  <text x="38" y="42" font-size="10" font-weight="bold" fill="#1d1b20">Mes tâches (2 restantes)</text>
+  <rect x="36" y="62" width="138" height="20" rx="10" fill="#fff" stroke="#79747e"/>
+  <text x="48" y="76" font-size="8" fill="#79747e">🔍 Rechercher…</text>
+  <g font-size="8.5">
+    <rect x="36" y="90" width="138" height="34" rx="6" fill="#fff" stroke="#e0e0e0"/>
+    <rect x="42" y="100" width="12" height="12" rx="2" fill="none" stroke="#6750a4" stroke-width="1.5"/>
+    <text x="60" y="105" font-weight="bold">Réviser Room</text><text x="60" y="117" font-size="7" fill="#777">Priorité : haute</text>
+    <rect x="36" y="130" width="138" height="34" rx="6" fill="#fff" stroke="#e0e0e0"/>
+    <rect x="42" y="140" width="12" height="12" rx="2" fill="none" stroke="#6750a4" stroke-width="1.5"/>
+    <text x="60" y="145" font-weight="bold">Courses</text><text x="60" y="157" font-size="7" fill="#777">Priorité : normale</text>
+    <rect x="36" y="170" width="138" height="34" rx="6" fill="#fff" stroke="#e0e0e0"/>
+    <rect x="42" y="180" width="12" height="12" rx="2" fill="#6750a4"/>
+    <path d="M44 186l3 3 5-6" stroke="#fff" stroke-width="1.6" fill="none"/>
+    <text x="60" y="185" fill="#999" text-decoration="line-through">Appeler Paul</text><text x="60" y="197" font-size="7" fill="#aaa">Priorité : basse</text>
+  </g>
+  <rect x="134" y="236" width="36" height="36" rx="10" fill="#6750a4"/>
+  <text x="152" y="260" font-size="20" fill="#fff" text-anchor="middle">+</text>
+  <!-- bulles -->
+  <g font-size="10">
+    <line x1="182" y1="38" x2="250" y2="38" stroke="#6750a4" stroke-dasharray="3 3"/>
+    <rect x="250" y="24" width="290" height="28" rx="6" fill="#f4f1fa" stroke="#ddd6ee"/>
+    <text x="260" y="42">Compteur : Flow&lt;Int&gt; → COUNT(*) en SQL</text>
+    <line x1="176" y1="72" x2="250" y2="88" stroke="#6750a4" stroke-dasharray="3 3"/>
+    <rect x="250" y="74" width="290" height="28" rx="6" fill="#f4f1fa" stroke="#ddd6ee"/>
+    <text x="260" y="92">Recherche : requête LIKE relancée à chaque frappe</text>
+    <line x1="176" y1="140" x2="250" y2="140" stroke="#6750a4" stroke-dasharray="3 3"/>
+    <rect x="250" y="126" width="290" height="28" rx="6" fill="#f4f1fa" stroke="#ddd6ee"/>
+    <text x="260" y="144">Liste : LazyColumn alimentée par Flow&lt;List&lt;Tache&gt;&gt;</text>
+    <line x1="56" y1="186" x2="250" y2="192" stroke="#6750a4" stroke-dasharray="3 3"/>
+    <rect x="250" y="178" width="290" height="28" rx="6" fill="#f4f1fa" stroke="#ddd6ee"/>
+    <text x="260" y="196">Case à cocher : UPDATE … SET est_terminee</text>
+    <line x1="170" y1="254" x2="250" y2="244" stroke="#6750a4" stroke-dasharray="3 3"/>
+    <rect x="250" y="230" width="290" height="28" rx="6" fill="#f4f1fa" stroke="#ddd6ee"/>
+    <text x="260" y="248">Bouton + : dialogue puis @Insert</text>
+  </g>
+</svg>
+<figcaption>Figure 1 — L'écran principal de l'application et les opérations Room associées</figcaption>
+</figure>
+
+<!-- ===================== 1 ===================== -->
+<h1><span class="num">1</span>Introduction à Room</h1>
+<p><b>Room</b> est la bibliothèque officielle de persistance d'Android (famille <i>Android Jetpack</i>). C'est une <b>couche d'abstraction au-dessus de SQLite</b>, la base de données relationnelle embarquée dans chaque appareil Android.</p>
+
+<h2>Pourquoi ne pas utiliser SQLite directement ?</h2>
+<table>
+<tr><th>SQLite « brut » (SQLiteOpenHelper)</th><th>Room</th></tr>
+<tr><td>Beaucoup de code répétitif (Cursor, ContentValues…)</td><td>Annotations : le code est généré automatiquement</td></tr>
+<tr><td>Erreurs SQL découvertes à l'exécution (crash)</td><td><b>Requêtes vérifiées à la compilation</b></td></tr>
+<tr><td>Conversion manuelle ligne ↔ objet</td><td>Conversion automatique en data class Kotlin</td></tr>
+<tr><td>Pas de notification de changement</td><td>Requêtes observables via <code>Flow</code></td></tr>
+<tr><td>Gestion des threads à la main</td><td>Support natif des coroutines (<code>suspend</code>)</td></tr>
+<tr><td>Migrations difficiles à tester</td><td>Schéma exporté en JSON + outils de test</td></tr>
+</table>
+
+<figure>
+<svg width="600" height="190" viewBox="0 0 600 190">
+  <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#6750a4"/></marker></defs>
+  <g font-size="11" text-anchor="middle">
+    <rect x="10" y="20" width="160" height="150" rx="10" fill="#f4f1fa" stroke="#6750a4"/>
+    <text x="90" y="42" font-weight="bold" fill="#3b2c85">Votre code Kotlin</text>
+    <rect x="25" y="55" width="130" height="30" rx="6" fill="#fff" stroke="#ddd6ee"/><text x="90" y="74">@Entity Tache</text>
+    <rect x="25" y="92" width="130" height="30" rx="6" fill="#fff" stroke="#ddd6ee"/><text x="90" y="111">@Dao TacheDao</text>
+    <rect x="25" y="129" width="130" height="30" rx="6" fill="#fff" stroke="#ddd6ee"/><text x="90" y="148">@Database</text>
+
+    <rect x="220" y="55" width="150" height="80" rx="10" fill="#6750a4"/>
+    <text x="295" y="85" fill="#fff" font-weight="bold" font-size="14">Room</text>
+    <text x="295" y="104" fill="#e8def8" font-size="9.5">KSP génère *_Impl</text>
+    <text x="295" y="119" fill="#e8def8" font-size="9.5">vérifie le SQL</text>
+
+    <path d="M420 50 v90 c0 12 70 12 70 0 v-90" fill="#e0f2f1" stroke="#00897b" stroke-width="2"/>
+    <ellipse cx="455" cy="50" rx="35" ry="10" fill="#b2dfdb" stroke="#00897b" stroke-width="2"/>
+    <text x="455" y="100" font-weight="bold" fill="#00695c">SQLite</text>
+    <text x="455" y="116" font-size="9" fill="#00695c">taches.db</text>
+
+    <line x1="170" y1="95" x2="216" y2="95" stroke="#6750a4" stroke-width="2" marker-end="url(#ar)"/>
+    <line x1="370" y1="95" x2="414" y2="95" stroke="#6750a4" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="540" y="70" font-size="9" fill="#5f5b66">fichier dans</text>
+    <text x="540" y="83" font-size="9" fill="#5f5b66">/data/data/</text>
+    <text x="540" y="96" font-size="9" fill="#5f5b66">&lt;package&gt;/</text>
+    <text x="540" y="109" font-size="9" fill="#5f5b66">databases/</text>
+  </g>
+</svg>
+<figcaption>Figure 2 — Room se place entre votre code et SQLite</figcaption>
+</figure>
+
+<h2>Quand utiliser Room ?</h2>
+<ul>
+  <li>Données <b>structurées</b> et nombreuses (listes, historiques, catalogues…).</li>
+  <li>Mode <b>hors-ligne</b> : cache local de données venant d'une API.</li>
+  <li>Besoin de <b>requêtes</b> (filtres, tris, jointures, agrégats).</li>
+</ul>
+<div class="box tip"><b class="t1">💡 Et DataStore ?</b>Pour quelques préférences simples (thème sombre, langue, token…), préférez <b>DataStore</b>. Room est fait pour des données relationnelles.</div>
+
+<!-- ===================== 2 ===================== -->
+<h1><span class="num">2</span>Installation &amp; configuration Gradle</h1>
+<p>Room utilise un <b>processeur d'annotations</b> qui génère du code à la compilation. Avec Kotlin, on utilise <b>KSP</b> (Kotlin Symbol Processing), plus rapide que l'ancien <code>kapt</code>.</p>
+
+<h3>Étape 1 — Le catalogue de versions</h3>
+<pre><span class="file">gradle/libs.versions.toml (extrait)</span>[versions]
+kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"        # doit correspondre à la version de Kotlin
+room = "2.7.1"
+
+[libraries]
+androidx-room-runtime  = { group = "androidx.room", name = "room-runtime",  version.ref = "room" }
+androidx-room-ktx      = { group = "androidx.room", name = "room-ktx",      version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-testing  = { group = "androidx.room", name = "room-testing",  version.ref = "room" }
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }</pre>
+
+<h3>Étape 2 — Le module app</h3>
+<pre><span class="file">app/build.gradle.kts (extrait)</span>plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)            // ← indispensable
+}
+
+ksp {
+    // exporte le schéma JSON de chaque version (pour les migrations)
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+dependencies {
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)     // coroutines + Flow
+    ksp(libs.androidx.room.compiler)           // génération de code
+    androidTestImplementation(libs.androidx.room.testing)
+}</pre>
+
+<table>
+<tr><th>Dépendance</th><th>Rôle</th></tr>
+<tr><td><code>room-runtime</code></td><td>Le cœur de Room (API, accès SQLite)</td></tr>
+<tr><td><code>room-ktx</code></td><td>Extensions Kotlin : <code>suspend</code>, <code>Flow</code>, <code>withTransaction</code></td></tr>
+<tr><td><code>room-compiler</code></td><td>Processeur KSP qui génère <code>TacheDao_Impl</code>, <code>AppDatabase_Impl</code></td></tr>
+<tr><td><code>room-testing</code></td><td><code>MigrationTestHelper</code> pour tester les migrations</td></tr>
+</table>
+<div class="box warn"><b class="t1">⚠️ Erreur classique</b>Oublier <code>ksp(...)</code> pour le compilateur donne à l'exécution : <i>« cannot find implementation for AppDatabase. AppDatabase_Impl does not exist »</i>.</div>
+
+<!-- ===================== 3 ===================== -->
+<h1><span class="num">3</span>Les trois briques de Room</h1>
+<p>Room repose sur trois composants, chacun déclaré par une annotation :</p>
+<figure>
+<svg width="620" height="270" viewBox="0 0 620 270">
+  <defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#3b2c85"/></marker></defs>
+  <g font-size="11">
+    <rect x="200" y="10" width="220" height="62" rx="10" fill="#3b2c85"/>
+    <text x="310" y="34" fill="#fff" text-anchor="middle" font-weight="bold" font-size="13">@Database  AppDatabase</text>
+    <text x="310" y="54" fill="#d0c8f0" text-anchor="middle" font-size="9.5">point d'accès principal · liste des tables · version</text>
+
+    <rect x="40" y="120" width="230" height="62" rx="10" fill="#6750a4"/>
+    <text x="155" y="144" fill="#fff" text-anchor="middle" font-weight="bold" font-size="13">@Dao  TacheDao</text>
+    <text x="155" y="164" fill="#e8def8" text-anchor="middle" font-size="9.5">méthodes d'accès : insert, query…</text>
+
+    <rect x="350" y="120" width="230" height="62" rx="10" fill="#00897b"/>
+    <text x="465" y="144" fill="#fff" text-anchor="middle" font-weight="bold" font-size="13">@Entity  Tache</text>
+    <text x="465" y="164" fill="#e0f2f1" text-anchor="middle" font-size="9.5">une classe = une table</text>
+
+    <line x1="270" y1="72" x2="170" y2="116" stroke="#3b2c85" stroke-width="2" marker-end="url(#ar2)"/>
+    <text x="175" y="95" font-size="9.5" fill="#3b2c85">fournit les DAO</text>
+    <line x1="350" y1="72" x2="450" y2="116" stroke="#3b2c85" stroke-width="2" marker-end="url(#ar2)"/>
+    <text x="410" y="95" font-size="9.5" fill="#3b2c85">contient les tables</text>
+    <line x1="270" y1="151" x2="346" y2="151" stroke="#3b2c85" stroke-width="2" marker-end="url(#ar2)"/>
+    <text x="278" y="143" font-size="9" fill="#3b2c85">lit / écrit</text>
+
+    <rect x="160" y="215" width="300" height="44" rx="10" fill="#f4f1fa" stroke="#6750a4" stroke-dasharray="4 3"/>
+    <text x="310" y="235" text-anchor="middle" font-weight="bold" fill="#3b2c85">Votre application (Repository / ViewModel)</text>
+    <text x="310" y="250" text-anchor="middle" font-size="9.5" fill="#5f5b66">db.tacheDao().inserer(tache)</text>
+    <line x1="200" y1="215" x2="170" y2="186" stroke="#3b2c85" stroke-width="2" marker-end="url(#ar2)"/>
+  </g>
+</svg>
+<figcaption>Figure 3 — Relations entre Database, DAO et Entity</figcaption>
+</figure>
+<table>
+<tr><th>Brique</th><th>Type Kotlin</th><th>Rôle</th></tr>
+<tr><td><b>Entity</b></td><td><code>data class</code></td><td>Décrit une table : chaque propriété devient une colonne.</td></tr>
+<tr><td><b>DAO</b></td><td><code>interface</code></td><td>Décrit les opérations (SQL) ; Room écrit l'implémentation.</td></tr>
+<tr><td><b>Database</b></td><td><code>abstract class</code></td><td>Relie le tout, crée le fichier SQLite et fournit les DAO.</td></tr>
+</table>
+
+<!-- ===================== 4 ===================== -->
+<h1><span class="num">4</span>Les entités (@Entity)</h1>
+<p>Une <b>entité</b> est une <code>data class</code> annotée par <code>@Entity</code>. Room crée une table dont les colonnes correspondent aux propriétés.</p>
+
+<figure>
+<svg width="640" height="210" viewBox="0 0 640 210">
+  <defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#00897b"/></marker></defs>
+  <rect x="5" y="10" width="250" height="190" rx="8" fill="#1e1d2b"/>
+  <g font-family="DejaVu Sans Mono,monospace" font-size="10" fill="#e8e6f0">
+    <text x="15" y="30" fill="#ffb86c">@Entity(tableName="taches")</text>
+    <text x="15" y="46"><tspan fill="#ff79c6">data class</tspan> Tache(</text>
+    <text x="25" y="64" fill="#ffb86c">@PrimaryKey(autoGenerate=true)</text>
+    <text x="25" y="78"><tspan fill="#ff79c6">val</tspan> id: Long = 0,</text>
+    <text x="25" y="96"><tspan fill="#ff79c6">val</tspan> titre: String,</text>
+    <text x="25" y="114" fill="#ffb86c">@ColumnInfo("est_terminee")</text>
+    <text x="25" y="128"><tspan fill="#ff79c6">val</tspan> estTerminee: Boolean,</text>
+    <text x="25" y="146"><tspan fill="#ff79c6">val</tspan> priorite: Priorite,</text>
+    <text x="25" y="164"><tspan fill="#ff79c6">val</tspan> dateEcheance: LocalDate?</text>
+    <text x="15" y="182">)</text>
+  </g>
+  <line x1="262" y1="105" x2="318" y2="105" stroke="#00897b" stroke-width="3" marker-end="url(#ar3)"/>
+  <text x="290" y="96" font-size="9" fill="#00897b" text-anchor="middle">Room</text>
+  <g font-size="10">
+    <rect x="325" y="10" width="310" height="22" fill="#00897b"/>
+    <text x="480" y="26" fill="#fff" text-anchor="middle" font-weight="bold">Table « taches »</text>
+    <rect x="325" y="32" width="310" height="20" fill="#b2dfdb"/>
+    <g font-weight="bold" fill="#004d40"><text x="332" y="46">id 🔑</text><text x="370" y="46">titre</text><text x="445" y="46">est_terminee</text><text x="525" y="46">priorite</text><text x="583" y="46">date_ech.</text></g>
+    <g fill="#1d1b20">
+      <rect x="325" y="52" width="310" height="20" fill="#fff" stroke="#e0f2f1"/>
+      <text x="332" y="66">1</text><text x="370" y="66">Réviser Room</text><text x="470" y="66">0</text><text x="525" y="66">HAUTE</text><text x="583" y="66">20410</text>
+      <rect x="325" y="72" width="310" height="20" fill="#f1f8f7" stroke="#e0f2f1"/>
+      <text x="332" y="86">2</text><text x="370" y="86">Courses</text><text x="470" y="86">0</text><text x="525" y="86">NORMALE</text><text x="583" y="86">NULL</text>
+      <rect x="325" y="92" width="310" height="20" fill="#fff" stroke="#e0f2f1"/>
+      <text x="332" y="106">3</text><text x="370" y="106">Appeler Paul</text><text x="470" y="106">1</text><text x="525" y="106">BASSE</text><text x="583" y="106">NULL</text>
+    </g>
+    <g font-size="9" fill="#5f5b66">
+      <text x="330" y="132">INTEGER PRIMARY KEY AUTOINCREMENT · TEXT NOT NULL</text>
+      <text x="330" y="146">Boolean → INTEGER (0/1) · enum → TEXT</text>
+      <text x="330" y="160">LocalDate? → INTEGER via TypeConverter (nullable)</text>
+      <text x="330" y="174">Type non-null Kotlin  ⇒  colonne NOT NULL</text>
+    </g>
+  </g>
+</svg>
+<figcaption>Figure 4 — Correspondance entre une data class et une table SQLite</figcaption>
+</figure>
+
+<h2>Les annotations essentielles</h2>
+<table>
+<tr><th>Annotation</th><th>Utilité</th><th>Exemple</th></tr>
+<tr><td><code>@Entity</code></td><td>Déclare une table</td><td><code>@Entity(tableName = "taches")</code></td></tr>
+<tr><td><code>@PrimaryKey</code></td><td>Clé primaire (obligatoire)</td><td><code>@PrimaryKey(autoGenerate = true)</code></td></tr>
+<tr><td><code>@ColumnInfo</code></td><td>Nom / valeur par défaut d'une colonne</td><td><code>@ColumnInfo(name = "est_terminee", defaultValue = "0")</code></td></tr>
+<tr><td><code>@Ignore</code></td><td>Propriété non stockée</td><td>Valeur calculée, cache…</td></tr>
+<tr><td><code>Index</code></td><td>Accélère les recherches / unicité</td><td><code>indices = [Index(value=["nom"], unique=true)]</code></td></tr>
+<tr><td><code>ForeignKey</code></td><td>Clé étrangère + intégrité</td><td><code>onDelete = ForeignKey.CASCADE</code></td></tr>
+<tr><td><code>@Embedded</code></td><td>Aplatit un objet en colonnes</td><td>Adresse → rue, ville, cp</td></tr>
+</table>
+
+<h2>L'entité Tache du projet</h2>
+<pre><span class="file">data/local/entity/Tache.kt</span>enum class Priorite { BASSE, NORMALE, HAUTE }
+
+@Entity(
+    tableName = "taches",
+    foreignKeys = [
+        ForeignKey(
+            entity = Categorie::class,
+            parentColumns = ["id"],
+            childColumns = ["categorie_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("categorie_id")]   // un index sur chaque clé étrangère
+)
+data class Tache(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,                   // 0 = "pas encore inséré"
+    val titre: String,
+    val description: String = "",
+    @ColumnInfo(name = "est_terminee", defaultValue = "0")
+    val estTerminee: Boolean = false,
+    val priorite: Priorite = Priorite.NORMALE,
+    @ColumnInfo(name = "date_echeance")
+    val dateEcheance: LocalDate? = null,
+    @ColumnInfo(name = "categorie_id")
+    val categorieId: Long? = null,
+    @ColumnInfo(name = "cree_le", defaultValue = "0")
+    val creeLe: Long = System.currentTimeMillis()
+) {
+    @Ignore   // propriété calculée, jamais stockée
+    val estEnRetard: Boolean =
+        !estTerminee &amp;&amp; dateEcheance != null &amp;&amp; dateEcheance.isBefore(LocalDate.now())
+}</pre>
+
+<div class="box tip"><b class="t1">💡 autoGenerate et la valeur 0</b>Avec <code>autoGenerate = true</code>, si l'id vaut <code>0</code>, Room laisse SQLite générer un nouvel identifiant. La méthode <code>@Insert</code> renvoie alors l'id créé (<code>Long</code>).</div>
+
+<h2>Exemple : @Embedded</h2>
+<pre>data class Adresse(val rue: String, val ville: String, val codePostal: String)
+
+@Entity
+data class Contact(
+    @PrimaryKey val id: Long,
+    val nom: String,
+    @Embedded(prefix = "adr_") val adresse: Adresse
+)
+// Table contact : id | nom | adr_rue | adr_ville | adr_codePostal</pre>
+
+<!-- ===================== 5 ===================== -->
+<h1><span class="num">5</span>Les DAO (@Dao)</h1>
+<p>Un <b>DAO</b> (<i>Data Access Object</i>) est une <b>interface</b> qui déclare les opérations sur la base. Vous écrivez les signatures ; Room génère le code (classe <code>TacheDao_Impl</code>).</p>
+
+<h2>Les annotations de méthode</h2>
+<table>
+<tr><th>Annotation</th><th>Effet</th><th>Retour possible</th></tr>
+<tr><td><code>@Insert</code></td><td>INSERT d'un ou plusieurs objets</td><td><code>Long</code> (id) / <code>List&lt;Long&gt;</code></td></tr>
+<tr><td><code>@Update</code></td><td>UPDATE par clé primaire</td><td><code>Int</code> (lignes modifiées)</td></tr>
+<tr><td><code>@Delete</code></td><td>DELETE par clé primaire</td><td><code>Int</code></td></tr>
+<tr><td><code>@Upsert</code></td><td>INSERT, ou UPDATE si la clé existe</td><td><code>Unit</code> / <code>Long</code></td></tr>
+<tr><td><code>@Query("…")</code></td><td>N'importe quelle requête SQL</td><td>Objet, liste, <code>Flow</code>, scalaire…</td></tr>
+<tr><td><code>@Transaction</code></td><td>Exécute en une transaction atomique</td><td>—</td></tr>
+</table>
+
+<h2>suspend ou Flow ?</h2>
+<figure>
+<svg width="620" height="170" viewBox="0 0 620 170">
+  <g font-size="10.5">
+    <rect x="10" y="10" width="290" height="150" rx="10" fill="#fff3e0" stroke="#e65100"/>
+    <text x="155" y="32" text-anchor="middle" font-weight="bold" fill="#bf360c" font-size="12">suspend fun — « one-shot »</text>
+    <circle cx="50" cy="80" r="16" fill="#e65100"/><text x="50" y="84" fill="#fff" text-anchor="middle" font-size="9">appel</text>
+    <line x1="66" y1="80" x2="146" y2="80" stroke="#e65100" stroke-width="2"/>
+    <circle cx="176" cy="80" r="28" fill="#fff" stroke="#e65100" stroke-width="2"/><text x="176" y="84" text-anchor="middle" font-size="9">1 résultat</text>
+    <text x="218" y="86" font-size="14" fill="#bf360c">■ fin</text>
+    <text x="25" y="122" fill="#5f5b66">Écritures (insert/update/delete)</text>
+    <text x="25" y="138" fill="#5f5b66">Lecture ponctuelle (trouverParId)</text>
+
+    <rect x="320" y="10" width="290" height="150" rx="10" fill="#e6f5f2" stroke="#00897b"/>
+    <text x="465" y="32" text-anchor="middle" font-weight="bold" fill="#00695c" font-size="12">fun …(): Flow&lt;T&gt; — « observable »</text>
+    <line x1="340" y1="80" x2="595" y2="80" stroke="#00897b" stroke-width="2"/>
+    <circle cx="370" cy="80" r="11" fill="#00897b"/><circle cx="440" cy="80" r="11" fill="#00897b"/><circle cx="520" cy="80" r="11" fill="#00897b"/>
+    <text x="370" y="84" fill="#fff" text-anchor="middle" font-size="8">v1</text><text x="440" y="84" fill="#fff" text-anchor="middle" font-size="8">v2</text><text x="520" y="84" fill="#fff" text-anchor="middle" font-size="8">v3</text>
+    <text x="440" y="104" text-anchor="middle" font-size="9" fill="#00695c">nouvelle émission à chaque modification de la table</text>
+    <text x="335" y="128" fill="#5f5b66">Listes affichées à l'écran</text>
+    <text x="335" y="144" fill="#5f5b66">Compteurs, statistiques… (pas de suspend !)</text>
+  </g>
+</svg>
+<figcaption>Figure 5 — Deux modes d'accès : appel ponctuel et flux observable</figcaption>
+</figure>
+
+<pre><span class="file">data/local/dao/TacheDao.kt</span>@Dao
+interface TacheDao {
+
+    // ---------- Écriture : fonctions suspend ----------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun inserer(tache: Tache): Long
+
+    @Insert
+    suspend fun insererTout(taches: List&lt;Tache&gt;): List&lt;Long&gt;
+
+    @Update
+    suspend fun modifier(tache: Tache): Int
+
+    @Upsert
+    suspend fun enregistrer(tache: Tache)
+
+    @Delete
+    suspend fun supprimer(tache: Tache): Int
+
+    @Query("UPDATE taches SET est_terminee = :terminee WHERE id = :id")
+    suspend fun changerEtat(id: Long, terminee: Boolean)
+
+    @Query("DELETE FROM taches WHERE est_terminee = 1")
+    suspend fun supprimerTerminees(): Int
+
+    // ---------- Lecture réactive : Flow ----------
+    @Query("SELECT * FROM taches ORDER BY est_terminee ASC, priorite DESC, cree_le DESC")
+    fun observerToutes(): Flow&lt;List&lt;Tache&gt;&gt;
+
+    @Query("SELECT * FROM taches WHERE titre LIKE '%' || :texte || '%' ORDER BY cree_le DESC")
+    fun rechercher(texte: String): Flow&lt;List&lt;Tache&gt;&gt;
+
+    @Query("SELECT COUNT(*) FROM taches WHERE est_terminee = 0")
+    fun compterRestantes(): Flow&lt;Int&gt;
+
+    // ---------- Lecture ponctuelle ----------
+    @Query("SELECT * FROM taches WHERE id = :id")
+    suspend fun trouverParId(id: Long): Tache?
+
+    // ---------- Transaction ----------
+    @Transaction
+    suspend fun remplacerTout(taches: List&lt;Tache&gt;) {
+        toutSupprimer()
+        insererTout(taches)
+    }
+
+    @Query("DELETE FROM taches")
+    suspend fun toutSupprimer()
+}</pre>
+
+<h2>Paramètres de requête</h2>
+<p>Dans <code>@Query</code>, <code>:nom</code> fait référence au paramètre de la fonction du même nom. Room le lie de façon sécurisée (pas d'injection SQL). On peut aussi passer une collection :</p>
+<pre>@Query("SELECT * FROM taches WHERE id IN (:ids)")
+suspend fun trouverPlusieurs(ids: List&lt;Long&gt;): List&lt;Tache&gt;</pre>
+
+<h2>Stratégies de conflit (OnConflictStrategy)</h2>
+<table>
+<tr><th>Stratégie</th><th>Si la clé (ou un index unique) existe déjà…</th></tr>
+<tr><td><code>ABORT</code> (défaut)</td><td>Annule l'opération et lève une exception</td></tr>
+<tr><td><code>REPLACE</code></td><td>Supprime l'ancienne ligne puis insère la nouvelle (⚠ déclenche les CASCADE !)</td></tr>
+<tr><td><code>IGNORE</code></td><td>Ne fait rien ; <code>@Insert</code> renvoie <code>-1</code></td></tr>
+</table>
+<div class="box tip"><b class="t1">💡 Vérification à la compilation</b>Si vous écrivez <code>SELECT * FROM tache</code> (sans « s ») ou une colonne inexistante, le projet <b>ne compile pas</b> : « There is a problem with the query: no such table: tache ». C'est l'un des gros atouts de Room.</div>
+
+<!-- ===================== 6 ===================== -->
+<h1><span class="num">6</span>La classe RoomDatabase</h1>
+<p>La base est une <b>classe abstraite</b> qui hérite de <code>RoomDatabase</code>. Elle liste les entités, porte le numéro de version et expose les DAO via des fonctions abstraites.</p>
+<pre><span class="file">data/local/AppDatabase.kt</span>@Database(
+    entities = [Tache::class, Categorie::class],
+    version = 2,
+    exportSchema = true
+)
+@TypeConverters(Converters::class)
+abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun tacheDao(): TacheDao
+    abstract fun categorieDao(): CategorieDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getInstance(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "taches.db"
+                )
+                    .addMigrations(MIGRATION_1_2)
+                    .build()
+                    .also { INSTANCE = it }
+            }
+    }
+}</pre>
+
+<h2>Pourquoi un singleton ?</h2>
+<p>Ouvrir une base SQLite est <b>coûteux</b>, et plusieurs instances simultanées risquent des incohérences. On garantit donc une <b>instance unique</b> :</p>
+<ul>
+  <li><code>@Volatile</code> : toutes les threads voient immédiatement la valeur écrite ;</li>
+  <li><code>synchronized</code> : deux threads ne peuvent pas créer la base en même temps (<i>double-checked locking</i>) ;</li>
+  <li><code>applicationContext</code> : évite une fuite mémoire de l'Activity.</li>
+</ul>
+
+<h2>Où créer la base ? Dans la classe Application</h2>
+<pre><span class="file">TacheApplication.kt</span>class TacheApplication : Application() {
+    val database: AppDatabase by lazy { AppDatabase.getInstance(this) }
+    val repository: TacheRepository by lazy {
+        TacheRepository(database.tacheDao(), database.categorieDao())
+    }
+}
+// + android:name=".TacheApplication" dans AndroidManifest.xml</pre>
+
+<h2>Options utiles du builder</h2>
+<table>
+<tr><th>Méthode</th><th>Effet</th></tr>
+<tr><td><code>addMigrations(...)</code></td><td>Déclare les migrations entre versions</td></tr>
+<tr><td><code>fallbackToDestructiveMigration(true)</code></td><td>Efface tout si aucune migration ne correspond (⚠ perte de données)</td></tr>
+<tr><td><code>createFromAsset("base.db")</code></td><td>Base pré-remplie fournie dans <code>assets/</code></td></tr>
+<tr><td><code>addCallback(...)</code></td><td>Code exécuté à la création / ouverture (données initiales)</td></tr>
+<tr><td><code>Room.inMemoryDatabaseBuilder(...)</code></td><td>Base en mémoire (tests)</td></tr>
+<tr><td><code>allowMainThreadQueries()</code></td><td>Autorise le thread principal — <b>tests uniquement</b></td></tr>
+</table>
+
+<div class="box info"><b class="t1">ℹ️ Avec Hilt</b>Dans un projet réel, on fournit souvent la base via l'injection de dépendances : <code>@Provides @Singleton fun provideDb(@ApplicationContext ctx: Context) = Room.databaseBuilder(...).build()</code>. Le principe (une seule instance) reste identique.</div>
+
+<!-- ===================== 7 ===================== -->
+<h1><span class="num">7</span>Les TypeConverters</h1>
+<p>SQLite ne connaît que 4 types de stockage : <b>INTEGER, REAL, TEXT, BLOB</b>. Room gère nativement les types primitifs, <code>String</code>, <code>ByteArray</code> et les <code>enum</code>. Pour les autres (dates, listes, objets…), on écrit des <b>convertisseurs</b>.</p>
+<figure>
+<svg width="560" height="120" viewBox="0 0 560 120">
+  <defs><marker id="ar4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#6750a4"/></marker></defs>
+  <g font-size="11" text-anchor="middle">
+    <rect x="10" y="30" width="140" height="56" rx="10" fill="#f4f1fa" stroke="#6750a4"/>
+    <text x="80" y="54" font-weight="bold" fill="#3b2c85">LocalDate</text><text x="80" y="72" font-size="9.5">2025-11-18</text>
+    <rect x="210" y="20" width="140" height="76" rx="10" fill="#6750a4"/>
+    <text x="280" y="44" fill="#fff" font-weight="bold">@TypeConverter</text>
+    <text x="280" y="62" fill="#e8def8" font-size="9">fromLocalDate()  →</text>
+    <text x="280" y="78" fill="#e8def8" font-size="9">←  toLocalDate()</text>
+    <rect x="410" y="30" width="140" height="56" rx="10" fill="#e0f2f1" stroke="#00897b"/>
+    <text x="480" y="54" font-weight="bold" fill="#00695c">INTEGER</text><text x="480" y="72" font-size="9.5">20410 (epochDay)</text>
+    <line x1="150" y1="50" x2="206" y2="50" stroke="#6750a4" stroke-width="2" marker-end="url(#ar4)"/>
+    <line x1="350" y1="50" x2="406" y2="50" stroke="#6750a4" stroke-width="2" marker-end="url(#ar4)"/>
+    <line x1="406" y1="70" x2="354" y2="70" stroke="#6750a4" stroke-width="2" marker-end="url(#ar4)"/>
+    <line x1="206" y1="70" x2="154" y2="70" stroke="#6750a4" stroke-width="2" marker-end="url(#ar4)"/>
+  </g>
+</svg>
+<figcaption>Figure 6 — Un convertisseur fonctionne dans les deux sens</figcaption>
+</figure>
+<pre><span class="file">data/local/converter/Converters.kt</span>class Converters {
+
+    @TypeConverter
+    fun fromLocalDate(date: LocalDate?): Long? = date?.toEpochDay()
+
+    @TypeConverter
+    fun toLocalDate(jours: Long?): LocalDate? = jours?.let(LocalDate::ofEpochDay)
+
+    @TypeConverter
+    fun fromPriorite(p: Priorite): String = p.name
+
+    @TypeConverter
+    fun toPriorite(valeur: String): Priorite = Priorite.valueOf(valeur)
+}</pre>
+<p>On enregistre ensuite la classe sur la base : <code>@TypeConverters(Converters::class)</code> (portée globale). On peut aussi la placer sur une entité, un DAO ou un champ pour limiter sa portée.</p>
+
+<h3>Exemple : stocker une liste de chaînes</h3>
+<pre>class ListeConverter {
+    @TypeConverter
+    fun fromList(liste: List&lt;String&gt;): String = liste.joinToString(separator = "|")
+
+    @TypeConverter
+    fun toList(texte: String): List&lt;String&gt; =
+        if (texte.isEmpty()) emptyList() else texte.split("|")
+}</pre>
+<div class="box warn"><b class="t1">⚠️ Attention</b>Stocker une liste dans une seule colonne empêche de faire des requêtes dessus (filtrer par étiquette…). Si vous devez interroger ces valeurs, créez plutôt une <b>table séparée</b> et une relation (chapitre suivant).</div>
+
+<!-- ===================== 8 ===================== -->
+<h1><span class="num">8</span>Relations entre tables</h1>
+<p>Room ne permet <b>pas</b> à une entité de contenir directement une liste d'autres entités (pour éviter le chargement paresseux caché sur le thread UI). On modélise donc les relations avec des <b>clés étrangères</b> et des <b>classes de relation</b>.</p>
+
+<figure>
+<svg width="600" height="210" viewBox="0 0 600 210">
+  <g font-size="10.5">
+    <rect x="20" y="30" width="190" height="24" rx="4" fill="#3b2c85"/>
+    <text x="115" y="47" fill="#fff" text-anchor="middle" font-weight="bold">categories</text>
+    <rect x="20" y="54" width="190" height="84" fill="#f4f1fa" stroke="#3b2c85"/>
+    <text x="30" y="74">🔑 id : INTEGER</text>
+    <text x="30" y="94">nom : TEXT (UNIQUE)</text>
+    <text x="30" y="114">couleur : INTEGER</text>
+
+    <rect x="380" y="10" width="200" height="24" rx="4" fill="#00897b"/>
+    <text x="480" y="27" fill="#fff" text-anchor="middle" font-weight="bold">taches</text>
+    <rect x="380" y="34" width="200" height="164" fill="#e6f5f2" stroke="#00897b"/>
+    <text x="390" y="54">🔑 id : INTEGER</text>
+    <text x="390" y="72">titre : TEXT</text>
+    <text x="390" y="90">description : TEXT</text>
+    <text x="390" y="108">est_terminee : INTEGER</text>
+    <text x="390" y="126">priorite : TEXT</text>
+    <text x="390" y="144">date_echeance : INTEGER?</text>
+    <rect x="384" y="151" width="192" height="18" fill="#fff3e0"/>
+    <text x="390" y="164" fill="#bf360c" font-weight="bold">🔗 categorie_id : INTEGER?</text>
+    <text x="390" y="186">cree_le : INTEGER</text>
+
+    <path d="M210 70 C 300 70, 290 160, 380 160" fill="none" stroke="#e65100" stroke-width="2"/>
+    <text x="218" y="64" font-weight="bold" fill="#e65100">1</text>
+    <text x="362" y="154" font-weight="bold" fill="#e65100">N</text>
+    <text x="255" y="135" font-size="9" fill="#bf360c">ON DELETE CASCADE</text>
+  </g>
+</svg>
+<figcaption>Figure 7 — Relation un-à-plusieurs : une catégorie possède N tâches</figcaption>
+</figure>
+
+<h2>1. La clé étrangère (dans l'entité enfant)</h2>
+<p>Voir l'entité <code>Tache</code> (chapitre 4) : <code>ForeignKey(entity = Categorie::class, parentColumns = ["id"], childColumns = ["categorie_id"], onDelete = CASCADE)</code>. SQLite garantit alors qu'une tâche ne peut pas référencer une catégorie inexistante, et la suppression d'une catégorie supprime ses tâches.</p>
+
+<h2>2. La classe de relation (@Embedded + @Relation)</h2>
+<pre><span class="file">data/local/entity/CategorieAvecTaches.kt</span>data class CategorieAvecTaches(
+    @Embedded
+    val categorie: Categorie,                 // le parent
+
+    @Relation(
+        parentColumn = "id",                  // colonne de Categorie
+        entityColumn = "categorie_id"         // colonne de Tache
+    )
+    val taches: List&lt;Tache&gt;                    // les enfants
+)</pre>
+
+<h2>3. La requête dans le DAO</h2>
+<pre><span class="file">data/local/dao/CategorieDao.kt (extrait)</span>@Transaction   // Room exécute 2 requêtes : il faut un résultat cohérent
+@Query("SELECT * FROM categories ORDER BY nom")
+fun observerAvecTaches(): Flow&lt;List&lt;CategorieAvecTaches&gt;&gt;</pre>
+
+<h2>Les autres types de relations</h2>
+<table>
+<tr><th>Relation</th><th>Modélisation</th></tr>
+<tr><td><b>1-1</b> (Utilisateur ↔ Profil)</td><td><code>@Embedded</code> + <code>@Relation</code> avec un objet simple : <code>val profil: Profil</code></td></tr>
+<tr><td><b>1-N</b> (Catégorie → Tâches)</td><td><code>@Relation</code> avec <code>List&lt;Enfant&gt;</code></td></tr>
+<tr><td><b>N-N</b> (Tâches ↔ Étiquettes)</td><td>Table de jointure + <code>@Relation(associateBy = Junction(TacheEtiquette::class))</code></td></tr>
+</table>
+<pre>// Relation N-N : table de jointure
+@Entity(primaryKeys = ["tacheId", "etiquetteId"])
+data class TacheEtiquette(val tacheId: Long, val etiquetteId: Long)
+
+data class TacheAvecEtiquettes(
+    @Embedded val tache: Tache,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "etiquetteId",
+        associateBy = Junction(
+            value = TacheEtiquette::class,
+            parentColumn = "tacheId",
+            entityColumn = "etiquetteId"
+        )
+    )
+    val etiquettes: List&lt;Etiquette&gt;
+)</pre>
+
+<h2>Bonus : jointure et projection</h2>
+<p>Une requête peut renvoyer n'importe quelle <code>data class</code> dont les noms de propriétés correspondent aux colonnes du résultat (alias <code>AS</code>) :</p>
+<pre>data class StatistiqueCategorie(val nom: String, val total: Int, val terminees: Int)
+
+@Query("""
+    SELECT c.nom AS nom,
+           COUNT(t.id) AS total,
+           COALESCE(SUM(t.est_terminee), 0) AS terminees
+    FROM categories c
+    LEFT JOIN taches t ON t.categorie_id = c.id
+    GROUP BY c.id
+""")
+fun statistiques(): Flow&lt;List&lt;StatistiqueCategorie&gt;&gt;</pre>
+
+<!-- ===================== 9 ===================== -->
+<h1><span class="num">9</span>Architecture MVVM : Repository &amp; ViewModel</h1>
+<p>Google recommande une architecture en couches. L'UI Compose ne parle <b>jamais</b> directement à Room : elle passe par un <b>ViewModel</b>, qui passe par un <b>Repository</b>.</p>
+<figure>
+<svg width="640" height="250" viewBox="0 0 640 250">
+  <defs>
+    <marker id="d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#00897b"/></marker>
+    <marker id="u" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#e65100"/></marker>
+  </defs>
+  <g font-size="11" text-anchor="middle">
+    <rect x="10" y="20" width="130" height="90" rx="12" fill="#e8def8" stroke="#6750a4" stroke-width="2"/>
+    <text x="75" y="52" font-weight="bold" fill="#3b2c85">UI Compose</text>
+    <text x="75" y="70" font-size="9">TachesScreen</text><text x="75" y="84" font-size="9">collectAsState…</text>
+
+    <rect x="170" y="20" width="130" height="90" rx="12" fill="#d0c8f0" stroke="#6750a4" stroke-width="2"/>
+    <text x="235" y="52" font-weight="bold" fill="#3b2c85">ViewModel</text>
+    <text x="235" y="70" font-size="9">StateFlow&lt;UiState&gt;</text><text x="235" y="84" font-size="9">viewModelScope</text>
+
+    <rect x="330" y="20" width="130" height="90" rx="12" fill="#b9add9" stroke="#6750a4" stroke-width="2"/>
+    <text x="395" y="52" font-weight="bold" fill="#3b2c85">Repository</text>
+    <text x="395" y="70" font-size="9">source unique</text><text x="395" y="84" font-size="9">de vérité</text>
+
+    <rect x="490" y="20" width="140" height="90" rx="12" fill="#b2dfdb" stroke="#00897b" stroke-width="2"/>
+    <text x="560" y="45" font-weight="bold" fill="#00695c">Room</text>
+    <text x="560" y="64" font-size="9">DAO</text><text x="560" y="78" font-size="9">Database</text><text x="560" y="92" font-size="9">SQLite</text>
+
+    <!-- événements vers la droite -->
+    <line x1="140" y1="45" x2="166" y2="45" stroke="#e65100" stroke-width="2" marker-end="url(#u)"/>
+    <line x1="300" y1="45" x2="326" y2="45" stroke="#e65100" stroke-width="2" marker-end="url(#u)"/>
+    <line x1="460" y1="45" x2="486" y2="45" stroke="#e65100" stroke-width="2" marker-end="url(#u)"/>
+    <!-- données vers la gauche -->
+    <line x1="486" y1="90" x2="464" y2="90" stroke="#00897b" stroke-width="2" marker-end="url(#d)"/>
+    <line x1="326" y1="90" x2="304" y2="90" stroke="#00897b" stroke-width="2" marker-end="url(#d)"/>
+    <line x1="166" y1="90" x2="144" y2="90" stroke="#00897b" stroke-width="2" marker-end="url(#d)"/>
+  </g>
+  <g font-size="10.5">
+    <line x1="40" y1="150" x2="80" y2="150" stroke="#e65100" stroke-width="3"/><text x="90" y="154">Événements (clic, saisie) : appels de fonctions → <tspan font-family="monospace">suspend</tspan></text>
+    <line x1="40" y1="176" x2="80" y2="176" stroke="#00897b" stroke-width="3"/><text x="90" y="180">État (données) : <tspan font-family="monospace">Flow</tspan> → <tspan font-family="monospace">StateFlow</tspan> → <tspan font-family="monospace">State</tspan> Compose</text>
+    <text x="40" y="214" fill="#5f5b66">« Unidirectional Data Flow » : l'état descend, les événements remontent.</text>
+    <text x="40" y="232" fill="#5f5b66">Chaque couche ne connaît que la couche située à sa droite.</text>
+  </g>
+</svg>
+<figcaption>Figure 8 — Architecture recommandée et flux de données unidirectionnel</figcaption>
+</figure>
+
+<h2>Le Repository</h2>
+<pre><span class="file">data/repository/TacheRepository.kt</span>class TacheRepository(
+    private val tacheDao: TacheDao,
+    private val categorieDao: CategorieDao
+) {
+    val taches: Flow&lt;List&lt;Tache&gt;&gt; = tacheDao.observerToutes()
+    val categories: Flow&lt;List&lt;Categorie&gt;&gt; = categorieDao.observerToutes()
+    val nombreRestantes: Flow&lt;Int&gt; = tacheDao.compterRestantes()
+
+    fun rechercher(texte: String) = tacheDao.rechercher(texte)
+
+    suspend fun ajouter(tache: Tache): Long = tacheDao.inserer(tache)
+    suspend fun basculer(tache: Tache) = tacheDao.changerEtat(tache.id, !tache.estTerminee)
+    suspend fun supprimer(tache: Tache) = tacheDao.supprimer(tache)
+    suspend fun nettoyer(): Int = tacheDao.supprimerTerminees()
+}</pre>
+
+<h2>Le ViewModel</h2>
+<pre><span class="file">ui/TacheViewModel.kt</span>data class TachesUiState(
+    val taches: List&lt;Tache&gt; = emptyList(),
+    val categories: List&lt;Categorie&gt; = emptyList(),
+    val recherche: String = "",
+    val restantes: Int = 0,
+    val chargement: Boolean = true
+)
+
+class TacheViewModel(private val repository: TacheRepository) : ViewModel() {
+
+    private val recherche = MutableStateFlow("")
+
+    // à chaque frappe, on annule l'ancienne requête et on en lance une nouvelle
+    private val tachesFiltrees = recherche.flatMapLatest { texte ->
+        if (texte.isBlank()) repository.taches else repository.rechercher(texte)
+    }
+
+    val uiState: StateFlow&lt;TachesUiState&gt; = combine(
+        tachesFiltrees, repository.categories, repository.nombreRestantes, recherche
+    ) { taches, categories, restantes, texte ->
+        TachesUiState(taches, categories, texte, restantes, chargement = false)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = TachesUiState()
+    )
+
+    fun onRechercheChange(texte: String) { recherche.value = texte }
+
+    fun ajouter(titre: String, priorite: Priorite, categorieId: Long?) {
+        if (titre.isBlank()) return
+        viewModelScope.launch {
+            repository.ajouter(Tache(titre = titre.trim(), priorite = priorite,
+                                     categorieId = categorieId))
+        }
+    }
+
+    fun basculer(tache: Tache) = viewModelScope.launch { repository.basculer(tache) }
+    fun supprimer(tache: Tache) = viewModelScope.launch { repository.supprimer(tache) }
+
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                val app = this[APPLICATION_KEY] as TacheApplication
+                TacheViewModel(app.repository)
+            }
+        }
+    }
+}</pre>
+<table>
+<tr><th>Élément</th><th>Pourquoi ?</th></tr>
+<tr><td><code>viewModelScope.launch</code></td><td>Lance les appels <code>suspend</code> ; annulé automatiquement quand le ViewModel est détruit.</td></tr>
+<tr><td><code>stateIn(...)</code></td><td>Transforme le <code>Flow</code> « froid » de Room en <code>StateFlow</code> « chaud » avec une valeur courante.</td></tr>
+<tr><td><code>WhileSubscribed(5_000)</code></td><td>Garde la requête active 5 s après la disparition de l'UI : une rotation d'écran ne relance pas la requête.</td></tr>
+<tr><td><code>combine</code></td><td>Fusionne plusieurs flux en un seul état d'écran.</td></tr>
+<tr><td><code>flatMapLatest</code></td><td>Change de requête Room quand le texte recherché change.</td></tr>
+<tr><td><code>Factory</code></td><td>Permet de passer le Repository au constructeur du ViewModel.</td></tr>
+</table>
+<div class="box info"><b class="t1">ℹ️ Et les threads ?</b>Pas besoin de <code>withContext(Dispatchers.IO)</code> : les fonctions <code>suspend</code> et les <code>Flow</code> générés par Room s'exécutent déjà sur un exécuteur en arrière-plan. On peut donc les appeler depuis <code>viewModelScope</code> (thread principal) sans bloquer l'UI.</div>
+
+<!-- ===================== 10 ===================== -->
+<h1><span class="num">10</span>Afficher les données avec Compose</h1>
+
+<h2>Collecter l'état : collectAsStateWithLifecycle</h2>
+<p><code>collectAsStateWithLifecycle()</code> (bibliothèque <code>lifecycle-runtime-compose</code>) transforme un <code>StateFlow</code> en <code>State</code> Compose. Chaque nouvelle valeur provoque une <b>recomposition</b>. La collecte s'arrête automatiquement quand l'application passe en arrière-plan.</p>
+
+<h2>Séparer composable « avec état » et « sans état »</h2>
+<pre><span class="file">ui/screens/TachesScreen.kt (extrait)</span>// 1. Route : connaît le ViewModel
+@Composable
+fun TachesRoute(viewModel: TacheViewModel = viewModel(factory = TacheViewModel.Factory)) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    TachesScreen(
+        taches = state.taches,
+        categories = state.categories,
+        recherche = state.recherche,
+        restantes = state.restantes,
+        chargement = state.chargement,
+        onRechercheChange = viewModel::onRechercheChange,
+        onAjouter = viewModel::ajouter,
+        onBasculer = { viewModel.basculer(it) },
+        onSupprimer = { viewModel.supprimer(it) },
+        onNettoyer = { viewModel.nettoyer() }
+    )
+}
+
+// 2. Screen : ne reçoit que des données et des lambdas (prévisualisable)
+@Composable
+fun TachesScreen(taches: List&lt;Tache&gt;, /* … */ onBasculer: (Tache) -&gt; Unit, /* … */) {
+    Scaffold(/* topBar, FAB… */) { padding -&gt;
+        Column(Modifier.padding(padding)) {
+            OutlinedTextField(value = recherche, onValueChange = onRechercheChange, /* … */)
+            when {
+                chargement -&gt; CircularProgressIndicator()
+                taches.isEmpty() -&gt; Text("Aucune tâche")
+                else -&gt; LazyColumn {
+                    items(taches, key = { it.id }) { tache -&gt;
+                        TacheItem(tache, onBasculer, onSupprimer)
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+
+<h2>Un élément de liste</h2>
+<pre>@Composable
+fun TacheItem(tache: Tache, onBasculer: (Tache) -&gt; Unit, onSupprimer: (Tache) -&gt; Unit) {
+    Card(Modifier.fillMaxWidth()) {
+        Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = tache.estTerminee, onCheckedChange = { onBasculer(tache) })
+            Column(Modifier.weight(1f)) {
+                Text(
+                    tache.titre,
+                    textDecoration = if (tache.estTerminee) TextDecoration.LineThrough else null
+                )
+                Text("Priorité : ${tache.priorite.name.lowercase()}",
+                     style = MaterialTheme.typography.bodySmall)
+            }
+            IconButton(onClick = { onSupprimer(tache) }) {
+                Icon(Icons.Default.Delete, contentDescription = "Supprimer")
+            }
+        }
+    }
+}</pre>
+<div class="box tip"><b class="t1">💡 key = { it.id }</b>Donner la clé primaire Room comme <code>key</code> à <code>items</code> permet à Compose de savoir quel élément a bougé ou disparu : animations correctes, état local conservé, recompositions minimales.</div>
+
+<h2>Le formulaire d'ajout</h2>
+<pre>@Composable
+fun AjoutTacheDialog(categories: List&lt;Categorie&gt;, onFermer: () -&gt; Unit,
+                     onValider: (String, Priorite, Long?) -&gt; Unit) {
+    var titre by rememberSaveable { mutableStateOf("") }
+    var priorite by rememberSaveable { mutableStateOf(Priorite.NORMALE) }
+
+    AlertDialog(
+        onDismissRequest = onFermer,
+        title = { Text("Nouvelle tâche") },
+        text = {
+            Column {
+                OutlinedTextField(titre, { titre = it }, label = { Text("Titre") })
+                Row {
+                    Priorite.entries.forEach { p -&gt;
+                        FilterChip(selected = p == priorite, onClick = { priorite = p },
+                                   label = { Text(p.name.lowercase()) })
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onValider(titre, priorite, null) },
+                       enabled = titre.isNotBlank()) { Text("Ajouter") }
+        }
+    )
+}</pre>
+<p>L'état <b>temporaire</b> du formulaire (texte en cours de saisie) reste dans Compose (<code>rememberSaveable</code>). Seule la <b>validation</b> déclenche une écriture dans Room.</p>
+
+<!-- ===================== 11 ===================== -->
+<h1><span class="num">11</span>Le cycle réactif complet</h1>
+<p>Voici ce qui se passe quand l'utilisateur coche une tâche. <b>Aucune ligne de code ne « rafraîchit » la liste</b> : Room s'en charge grâce à son <i>InvalidationTracker</i>.</p>
+<figure>
+<svg width="640" height="340" viewBox="0 0 640 340">
+  <defs><marker id="c" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#3b2c85"/></marker></defs>
+  <g font-size="10.5">
+    <!-- 6 étapes en cercle -->
+    <g text-anchor="middle">
+      <rect x="240" y="10" width="160" height="50" rx="25" fill="#6750a4"/>
+      <text x="320" y="31" fill="#fff" font-weight="bold">① Clic sur la case</text><text x="320" y="48" fill="#e8def8" font-size="9">onBasculer(tache)</text>
+
+      <rect x="450" y="80" width="180" height="50" rx="25" fill="#7e57c2"/>
+      <text x="540" y="101" fill="#fff" font-weight="bold">② ViewModel</text><text x="540" y="118" fill="#ede7f6" font-size="9">viewModelScope.launch { … }</text>
+
+      <rect x="450" y="190" width="180" height="50" rx="25" fill="#00897b"/>
+      <text x="540" y="211" fill="#fff" font-weight="bold">③ DAO (thread IO)</text><text x="540" y="228" fill="#e0f2f1" font-size="9">UPDATE taches SET …</text>
+
+      <rect x="240" y="270" width="160" height="56" rx="25" fill="#00695c"/>
+      <text x="320" y="292" fill="#fff" font-weight="bold">④ InvalidationTracker</text><text x="320" y="310" fill="#e0f2f1" font-size="9">« table taches modifiée »</text>
+
+      <rect x="10" y="190" width="180" height="50" rx="25" fill="#e65100"/>
+      <text x="100" y="211" fill="#fff" font-weight="bold">⑤ Flow ré-émet</text><text x="100" y="228" fill="#fff3e0" font-size="9">SELECT relancé → StateFlow</text>
+
+      <rect x="10" y="80" width="180" height="50" rx="25" fill="#3b2c85"/>
+      <text x="100" y="101" fill="#fff" font-weight="bold">⑥ Recomposition</text><text x="100" y="118" fill="#d0c8f0" font-size="9">la case apparaît cochée</text>
+    </g>
+    <path d="M400 40 Q 500 40 520 76" fill="none" stroke="#3b2c85" stroke-width="2" marker-end="url(#c)"/>
+    <path d="M540 130 L 540 186" fill="none" stroke="#3b2c85" stroke-width="2" marker-end="url(#c)"/>
+    <path d="M520 240 Q 500 298 404 298" fill="none" stroke="#3b2c85" stroke-width="2" marker-end="url(#c)"/>
+    <path d="M240 298 Q 130 298 110 244" fill="none" stroke="#3b2c85" stroke-width="2" marker-end="url(#c)"/>
+    <path d="M100 190 L 100 134" fill="none" stroke="#3b2c85" stroke-width="2" marker-end="url(#c)"/>
+    <path d="M120 80 Q 140 40 236 36" fill="none" stroke="#3b2c85" stroke-width="2" marker-end="url(#c)"/>
+    <text x="320" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#3b2c85">Source unique</text>
+    <text x="320" y="167" text-anchor="middle" font-size="12" font-weight="bold" fill="#3b2c85">de vérité :</text>
+    <text x="320" y="186" text-anchor="middle" font-size="12" font-weight="bold" fill="#00897b">la base Room</text>
+  </g>
+</svg>
+<figcaption>Figure 9 — De l'action utilisateur à la mise à jour de l'écran</figcaption>
+</figure>
+<div class="ex"><b>À retenir :</b> l'UI n'est jamais modifiée « à la main » après une écriture. On écrit dans la base, puis on laisse le <code>Flow</code> propager la nouvelle vérité. Ce principe s'appelle <b>Single Source of Truth</b> (source unique de vérité).</div>
+
+<h2>Diagramme de séquence</h2>
+<figure>
+<svg width="640" height="260" viewBox="0 0 640 260">
+  <defs><marker id="s" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#1d1b20"/></marker></defs>
+  <g font-size="10" text-anchor="middle">
+    <rect x="20" y="10" width="90" height="26" rx="5" fill="#e8def8"/><text x="65" y="27">Compose</text>
+    <rect x="150" y="10" width="90" height="26" rx="5" fill="#d0c8f0"/><text x="195" y="27">ViewModel</text>
+    <rect x="280" y="10" width="90" height="26" rx="5" fill="#b9add9"/><text x="325" y="27">Repository</text>
+    <rect x="410" y="10" width="90" height="26" rx="5" fill="#b2dfdb"/><text x="455" y="27">DAO</text>
+    <rect x="540" y="10" width="90" height="26" rx="5" fill="#80cbc4"/><text x="585" y="27">SQLite</text>
+  </g>
+  <g stroke="#aaa" stroke-dasharray="4 3"><line x1="65" y1="36" x2="65" y2="250"/><line x1="195" y1="36" x2="195" y2="250"/><line x1="325" y1="36" x2="325" y2="250"/><line x1="455" y1="36" x2="455" y2="250"/><line x1="585" y1="36" x2="585" y2="250"/></g>
+  <g font-size="9" stroke-width="1.5">
+    <line x1="65" y1="60" x2="191" y2="60" stroke="#1d1b20" marker-end="url(#s)"/><text x="128" y="55">basculer(t)</text>
+    <line x1="195" y1="82" x2="321" y2="82" stroke="#1d1b20" marker-end="url(#s)"/><text x="258" y="77">basculer(t)</text>
+    <line x1="325" y1="104" x2="451" y2="104" stroke="#1d1b20" marker-end="url(#s)"/><text x="388" y="99">changerEtat()</text>
+    <line x1="455" y1="126" x2="581" y2="126" stroke="#1d1b20" marker-end="url(#s)"/><text x="518" y="121">UPDATE</text>
+    <line x1="585" y1="150" x2="459" y2="150" stroke="#00897b" stroke-dasharray="5 3" marker-end="url(#s)"/><text x="522" y="145" fill="#00695c">invalidation</text>
+    <line x1="455" y1="174" x2="329" y2="174" stroke="#00897b" stroke-dasharray="5 3" marker-end="url(#s)"/><text x="390" y="169" fill="#00695c">Flow : nouvelle liste</text>
+    <line x1="325" y1="198" x2="199" y2="198" stroke="#00897b" stroke-dasharray="5 3" marker-end="url(#s)"/><text x="260" y="193" fill="#00695c">combine</text>
+    <line x1="195" y1="222" x2="69" y2="222" stroke="#00897b" stroke-dasharray="5 3" marker-end="url(#s)"/><text x="130" y="217" fill="#00695c">StateFlow → recompose</text>
+  </g>
+</svg>
+<figcaption>Figure 10 — Séquence : les écritures descendent (trait plein), les données remontent (pointillés)</figcaption>
+</figure>
+
+<!-- ===================== 12 ===================== -->
+<h1><span class="num">12</span>Les migrations</h1>
+<p>Quand vous modifiez une entité (nouvelle colonne, nouvelle table…), le schéma de la base change. Les utilisateurs ont déjà une base dans l'ancienne version : il faut la <b>migrer</b> sans perdre leurs données.</p>
+<figure>
+<svg width="620" height="150" viewBox="0 0 620 150">
+  <defs><marker id="m" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#6750a4"/></marker></defs>
+  <g font-size="10">
+    <rect x="10" y="20" width="160" height="110" rx="10" fill="#f4f1fa" stroke="#6750a4"/>
+    <text x="90" y="40" text-anchor="middle" font-weight="bold" fill="#3b2c85">Version 1</text>
+    <text x="22" y="62">taches(id, titre,</text><text x="22" y="76">description, est_terminee,</text><text x="22" y="90">priorite, date_echeance,</text><text x="22" y="104">categorie_id)</text>
+    <rect x="230" y="40" width="160" height="70" rx="10" fill="#6750a4"/>
+    <text x="310" y="64" text-anchor="middle" fill="#fff" font-weight="bold">MIGRATION_1_2</text>
+    <text x="310" y="82" text-anchor="middle" fill="#e8def8" font-size="8.5">ALTER TABLE taches</text>
+    <text x="310" y="96" text-anchor="middle" fill="#e8def8" font-size="8.5">ADD COLUMN cree_le …</text>
+    <rect x="450" y="20" width="160" height="110" rx="10" fill="#e6f5f2" stroke="#00897b"/>
+    <text x="530" y="40" text-anchor="middle" font-weight="bold" fill="#00695c">Version 2</text>
+    <text x="462" y="62">taches(id, titre,</text><text x="462" y="76">description, est_terminee,</text><text x="462" y="90">priorite, date_echeance,</text><text x="462" y="104">categorie_id, <tspan font-weight="bold" fill="#e65100">cree_le</tspan>)</text>
+    <line x1="170" y1="75" x2="226" y2="75" stroke="#6750a4" stroke-width="2" marker-end="url(#m)"/>
+    <line x1="390" y1="75" x2="446" y2="75" stroke="#6750a4" stroke-width="2" marker-end="url(#m)"/>
+  </g>
+</svg>
+<figcaption>Figure 11 — Une migration transforme le schéma v1 en schéma v2 en conservant les lignes</figcaption>
+</figure>
+
+<h2>Méthode 1 : migration manuelle</h2>
+<ol>
+  <li>Modifier l'entité (ajout de <code>creeLe</code>).</li>
+  <li>Incrémenter <code>version = 2</code> dans <code>@Database</code>.</li>
+  <li>Écrire l'objet <code>Migration</code> avec le SQL nécessaire.</li>
+  <li>L'enregistrer avec <code>.addMigrations(MIGRATION_1_2)</code>.</li>
+</ol>
+<pre>val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE taches ADD COLUMN cree_le INTEGER NOT NULL DEFAULT 0")
+    }
+}</pre>
+<div class="box warn"><b class="t1">⚠️ Le SQL doit correspondre exactement à l'entité</b>Room compare le schéma obtenu après migration avec le schéma attendu. Ici l'entité déclare <code>@ColumnInfo(name = "cree_le", defaultValue = "0")</code> et un type <code>Long</code> non-null : il faut donc <code>INTEGER NOT NULL DEFAULT 0</code>. Sinon : <i>IllegalStateException: Migration didn't properly handle…</i></div>
+
+<h2>Méthode 2 : AutoMigration</h2>
+<p>Pour les changements simples (ajout de colonne/table), Room peut générer la migration à partir des schémas exportés :</p>
+<pre>@Database(
+    entities = [Tache::class, Categorie::class],
+    version = 3,
+    autoMigrations = [
+        AutoMigration(from = 2, to = 3),
+        // renommage : il faut aider Room avec une spec
+        AutoMigration(from = 3, to = 4, spec = AppDatabase.RenommageSpec::class)
+    ]
+)
+abstract class AppDatabase : RoomDatabase() {
+    @RenameColumn(tableName = "taches", fromColumnName = "titre", toColumnName = "intitule")
+    class RenommageSpec : AutoMigrationSpec
+}</pre>
+<p>Prérequis : <code>exportSchema = true</code> et <code>room.schemaLocation</code> configuré. Les fichiers <code>schemas/…/1.json</code>, <code>2.json</code>… doivent être <b>versionnés dans Git</b>.</p>
+
+<h2>Méthode 3 : migration destructive</h2>
+<pre>.fallbackToDestructiveMigration(dropAllTables = true)</pre>
+<div class="box bad"><b class="t1">⛔ À réserver au développement</b>Toutes les données de l'utilisateur sont effacées. Acceptable uniquement pour un simple cache réseau qu'on peut re-télécharger.</div>
+
+<!-- ===================== 13 ===================== -->
+<h1><span class="num">13</span>Tester Room</h1>
+<p>Les tests de DAO sont des <b>tests instrumentés</b> (dossier <code>androidTest</code>) car ils utilisent le vrai SQLite d'Android. On utilise une <b>base en mémoire</b>, recréée pour chaque test.</p>
+<pre><span class="file">androidTest/…/TacheDaoTest.kt</span>@RunWith(AndroidJUnit4::class)
+class TacheDaoTest {
+
+    private lateinit var db: AppDatabase
+    private lateinit var tacheDao: TacheDao
+    private lateinit var categorieDao: CategorieDao
+
+    @Before
+    fun creerBase() {
+        val context = ApplicationProvider.getApplicationContext&lt;Context&gt;()
+        db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
+            .allowMainThreadQueries()
+            .build()
+        tacheDao = db.tacheDao()
+        categorieDao = db.categorieDao()
+    }
+
+    @After
+    fun fermerBase() = db.close()
+
+    @Test
+    fun insererPuisLire() = runTest {
+        val id = tacheDao.inserer(Tache(titre = "Réviser Room"))
+        assertEquals("Réviser Room", tacheDao.trouverParId(id)?.titre)
+    }
+
+    @Test
+    fun flowEmetApresInsertion() = runTest {
+        tacheDao.inserer(Tache(titre = "A"))
+        tacheDao.inserer(Tache(titre = "B"))
+        assertEquals(2, tacheDao.observerToutes().first().size)
+    }
+
+    @Test
+    fun suppressionEnCascade() = runTest {
+        val catId = categorieDao.inserer(Categorie(nom = "Travail"))
+        tacheDao.inserer(Tache(titre = "Rapport", categorieId = catId))
+        categorieDao.supprimer(Categorie(id = catId, nom = "Travail"))
+        assertTrue(tacheDao.observerToutes().first().isEmpty())
+    }
+}</pre>
+
+<h2>Tester une migration</h2>
+<pre><span class="file">androidTest/…/MigrationTest.kt</span>@get:Rule
+val helper = MigrationTestHelper(
+    InstrumentationRegistry.getInstrumentation(),
+    AppDatabase::class.java
+)
+
+@Test
+fun migration1Vers2() {
+    helper.createDatabase("test-migration", 1).apply {
+        execSQL("INSERT INTO taches (titre, description, est_terminee, priorite) " +
+                "VALUES ('Ancienne', '', 0, 'NORMALE')")
+        close()
+    }
+    // applique la migration et vérifie le schéma par rapport à 2.json
+    helper.runMigrationsAndValidate("test-migration", 2, true, AppDatabase.MIGRATION_1_2)
+}</pre>
+<div class="box tip"><b class="t1">💡 first() sur un Flow</b>Dans un test, <code>flow.first()</code> récupère la première émission puis arrête la collecte. Pour tester plusieurs émissions successives, la bibliothèque <b>Turbine</b> (<code>flow.test { awaitItem() }</code>) est très pratique.</div>
+
+<!-- ===================== 14 ===================== -->
+<h1><span class="num">14</span>Bonnes pratiques &amp; erreurs fréquentes</h1>
+<h2>✅ Bonnes pratiques</h2>
+<ul>
+  <li><b>Une seule instance</b> de la base (singleton ou <code>@Singleton</code> Hilt).</li>
+  <li>Écritures en <code>suspend</code>, lectures affichées en <code>Flow</code>.</li>
+  <li>Ne jamais accéder à Room depuis un <code>@Composable</code> : passer par le ViewModel.</li>
+  <li>Exposer un <code>StateFlow</code> d'état d'écran unique (<code>UiState</code>).</li>
+  <li>Utiliser <code>collectAsStateWithLifecycle()</code> plutôt que <code>collectAsState()</code>.</li>
+  <li>Toujours fournir <code>key = { it.id }</code> dans les <code>LazyColumn</code>.</li>
+  <li>Indexer les colonnes de clés étrangères et celles souvent filtrées.</li>
+  <li>Utiliser <code>@Transaction</code> pour les opérations multiples et les <code>@Relation</code>.</li>
+  <li>Versionner les schémas exportés et tester les migrations.</li>
+  <li>Sélectionner seulement les colonnes utiles (projection) pour les grosses tables.</li>
+  <li>Pour des listes très longues : <b>Paging 3</b> (<code>PagingSource&lt;Int, Tache&gt;</code> renvoyée par le DAO).</li>
+</ul>
+
+<h2>❌ Erreurs fréquentes</h2>
+<table>
+<tr><th>Message / symptôme</th><th>Cause</th><th>Solution</th></tr>
+<tr><td><i>Cannot access database on the main thread</i></td><td>Fonction DAO non <code>suspend</code> appelée depuis l'UI</td><td>Ajouter <code>suspend</code> ou renvoyer un <code>Flow</code></td></tr>
+<tr><td><i>AppDatabase_Impl does not exist</i></td><td>Processeur KSP absent</td><td>Ajouter le plugin KSP et <code>ksp(room-compiler)</code></td></tr>
+<tr><td><i>Room cannot verify the data integrity</i></td><td>Entité modifiée sans changer la version</td><td>Incrémenter <code>version</code> + migration</td></tr>
+<tr><td><i>A migration from 1 to 2 was required but not found</i></td><td>Migration non déclarée</td><td><code>addMigrations(...)</code> ou AutoMigration</td></tr>
+<tr><td><i>Cannot figure out how to save this field</i></td><td>Type non supporté (Date, List…)</td><td>Écrire un <code>@TypeConverter</code></td></tr>
+<tr><td><i>FOREIGN KEY constraint failed</i></td><td>Id parent inexistant</td><td>Insérer le parent avant l'enfant</td></tr>
+<tr><td>Liste qui ne se met pas à jour</td><td>Lecture via <code>suspend</code> au lieu de <code>Flow</code></td><td>Renvoyer <code>Flow&lt;List&lt;T&gt;&gt;</code></td></tr>
+<tr><td>Données perdues après une mise à jour</td><td><code>fallbackToDestructiveMigration</code></td><td>Écrire de vraies migrations</td></tr>
+</table>
+
+<!-- ===================== 15 ===================== -->
+<h1><span class="num">15</span>Aide-mémoire</h1>
+<div class="grid2">
+<div>
+<h3>Entité</h3>
+<pre>@Entity(tableName = "t")
+data class T(
+  @PrimaryKey(autoGenerate = true)
+  val id: Long = 0,
+  @ColumnInfo(name = "col") val x: String,
+  @Ignore val tmp: Int = 0
+)</pre>
+<h3>DAO</h3>
+<pre>@Dao interface TDao {
+  @Insert suspend fun add(t: T): Long
+  @Update suspend fun upd(t: T)
+  @Delete suspend fun del(t: T)
+  @Upsert suspend fun save(t: T)
+  @Query("SELECT * FROM t")
+  fun all(): Flow&lt;List&lt;T&gt;&gt;
+}</pre>
+<h3>Converter</h3>
+<pre>class Conv {
+  @TypeConverter fun a(d: LocalDate?) = d?.toEpochDay()
+  @TypeConverter fun b(l: Long?) = l?.let(LocalDate::ofEpochDay)
+}</pre>
+</div>
+<div>
+<h3>Database</h3>
+<pre>@Database(entities=[T::class], version=1)
+@TypeConverters(Conv::class)
+abstract class Db : RoomDatabase() {
+  abstract fun tDao(): TDao
+}
+Room.databaseBuilder(ctx, Db::class.java,
+                     "app.db").build()</pre>
+<h3>ViewModel</h3>
+<pre>val state = repo.all().stateIn(
+  viewModelScope,
+  SharingStarted.WhileSubscribed(5000),
+  emptyList())
+fun add(t: T) = viewModelScope.launch {
+  repo.add(t) }</pre>
+<h3>Compose</h3>
+<pre>val list by vm.state
+  .collectAsStateWithLifecycle()
+LazyColumn {
+  items(list, key = { it.id }) { Item(it) }
+}</pre>
+</div>
+</div>
+<table>
+<tr><th>Type Kotlin</th><th>Type SQLite</th></tr>
+<tr><td>Int, Long, Boolean, Short, Byte</td><td>INTEGER</td></tr>
+<tr><td>Float, Double</td><td>REAL</td></tr>
+<tr><td>String, enum</td><td>TEXT</td></tr>
+<tr><td>ByteArray</td><td>BLOB</td></tr>
+<tr><td>Type nullable (<code>String?</code>)</td><td>colonne sans NOT NULL</td></tr>
+</table>
+
+<!-- ===================== 16 ===================== -->
+<h1><span class="num">16</span>Exercices</h1>
+<div class="ex"><b>Exercice 1 — Date d'échéance (facile)</b><br>
+Ajoutez dans le dialogue d'ajout un sélecteur de date (<code>DatePickerDialog</code> de Material 3) et enregistrez la valeur dans <code>dateEcheance</code>. Affichez en rouge les tâches dont <code>estEnRetard</code> est vrai.</div>
+<div class="ex"><b>Exercice 2 — Filtre par priorité (facile)</b><br>
+Écrivez <code>@Query("SELECT * FROM taches WHERE priorite = :p") fun parPriorite(p: Priorite): Flow&lt;List&lt;Tache&gt;&gt;</code> et ajoutez des <code>FilterChip</code> au-dessus de la liste pour filtrer.</div>
+<div class="ex"><b>Exercice 3 — Écran des catégories (moyen)</b><br>
+Créez un second écran qui utilise <code>observerAvecTaches()</code> pour afficher chaque catégorie suivie de ses tâches (en-têtes avec <code>stickyHeader</code>). Ajoutez la navigation avec Navigation Compose.</div>
+<div class="ex"><b>Exercice 4 — Annuler une suppression (moyen)</b><br>
+Après une suppression, affichez un <code>Snackbar</code> « Tâche supprimée — ANNULER ». En cas d'annulation, ré-insérez l'objet supprimé (même id).</div>
+<div class="ex"><b>Exercice 5 — Étiquettes N-N (difficile)</b><br>
+Créez l'entité <code>Etiquette</code>, la table de jointure <code>TacheEtiquette</code> et la classe <code>TacheAvecEtiquettes</code>. Passez la base en version 3 avec une <code>AutoMigration(2, 3)</code> et écrivez le test correspondant.</div>
+<div class="ex"><b>Exercice 6 — Statistiques (difficile)</b><br>
+Affichez pour chaque catégorie une barre de progression (<code>LinearProgressIndicator</code>) à partir de la requête <code>statistiques()</code> : <code>terminees / total</code>.</div>
+
+<h2>Corrigé de l'exercice 2</h2>
+<pre>// DAO
+@Query("SELECT * FROM taches WHERE priorite = :p ORDER BY cree_le DESC")
+fun parPriorite(p: Priorite): Flow&lt;List&lt;Tache&gt;&gt;
+
+// ViewModel
+private val filtre = MutableStateFlow&lt;Priorite?&gt;(null)
+private val tachesFiltrees = filtre.flatMapLatest { p -&gt;
+    if (p == null) repository.taches else repository.parPriorite(p)
+}
+fun onFiltre(p: Priorite?) { filtre.value = p }
+
+// Compose
+Row {
+    Priorite.entries.forEach { p -&gt;
+        FilterChip(
+            selected = state.filtre == p,
+            onClick = { onFiltre(if (state.filtre == p) null else p) },
+            label = { Text(p.name.lowercase()) }
+        )
+    }
+}</pre>
+
+<h2>Corrigé de l'exercice 4</h2>
+<pre>// ViewModel
+private val _derniereSupprimee = MutableStateFlow&lt;Tache?&gt;(null)
+val derniereSupprimee = _derniereSupprimee.asStateFlow()
+
+fun supprimer(tache: Tache) = viewModelScope.launch {
+    repository.supprimer(tache)
+    _derniereSupprimee.value = tache
+}
+fun annulerSuppression() = viewModelScope.launch {
+    _derniereSupprimee.value?.let { repository.ajouter(it) }   // même id → ré-insertion
+    _derniereSupprimee.value = null
+}
+
+// Compose
+val snackbar = remember { SnackbarHostState() }
+val supprimee by vm.derniereSupprimee.collectAsStateWithLifecycle()
+LaunchedEffect(supprimee) {
+    if (supprimee != null) {
+        val res = snackbar.showSnackbar("Tâche supprimée", actionLabel = "ANNULER")
+        if (res == SnackbarResult.ActionPerformed) vm.annulerSuppression()
+    }
+}</pre>
+
+<div class="box info" style="margin-top:18px"><b class="t1">📦 Contenu de l'archive</b>
+<code>cours/</code> : ce cours en PDF et sa source HTML · <code>projet-exemple/</code> : projet Android Studio complet « Mes tâches » (Gradle, entités, DAO, base, repository, ViewModel, écrans Compose, tests DAO et migration) · <code>README.md</code> : mode d'emploi.</div>
+
+<script>
+// Coloration syntaxique Kotlin simple
+document.querySelectorAll('pre').forEach(function(pre){
+  var file = pre.querySelector('.file'); var fh = file ? file.outerHTML : '';
+  if (file) file.remove();
+  var src = pre.innerHTML;
+  var tokens = [];
+  function keep(cls){ return function(m){ tokens.push('<span class="'+cls+'">'+m+'</span>'); return String.fromCharCode(0xE000+tokens.length-1); }; }
+  src = src.replace(/\/\/[^\n]*/g, keep('c'));
+  src = src.replace(/#[^\n]*/g, function(m){ return /^#\s/.test(m)? keep('c')(m) : m; });
+  src = src.replace(/"""[\s\S]*?"""|"(?:[^"\\\n]|\\.)*"/g, keep('s'));
+  src = src.replace(/@[A-Za-z]+/g, keep('a'));
+  src = src.replace(/\b(fun|val|var|class|data|interface|abstract|object|companion|override|private|suspend|return|if|else|when|import|package|enum|by|lazy|true|false|null|this|is|in|as|plugins|dependencies)\b/g, keep('k'));
+  src = src.replace(/\b(SELECT|FROM|WHERE|ORDER BY|INSERT|INTO|VALUES|UPDATE|SET|DELETE|ALTER TABLE|ADD COLUMN|INTEGER|NOT NULL|DEFAULT|LIKE|COUNT|SUM|COALESCE|LEFT JOIN|ON|GROUP BY|AS|ASC|DESC|IN)\b/g, keep('t'));
+  src = src.replace(/\b\d[\d_]*L?\b/g, keep('n'));
+  for (var r=0;r<3;r++) src = src.replace(/[\uE000-\uF8FF]/g, function(ch){ return tokens[ch.charCodeAt(0)-0xE000]; });
+  pre.innerHTML = fh + src;
+});
+</script>
+</body>
+</html>
